@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Neutres (fond "parchemin") */
+    --color-sand-50:  #FCFBF9;
+    --color-sand-100: #F9F7F3;
+    --color-sand-200: #F6F1EA;
+    --color-sand-300: #F2EBE2;
+    --color-sand-400: #EFE7DC;
+    --color-sand-500: #ECE3D6;
+    --color-sand-600: #D0C8BC;
+    --color-sand-700: #AAA39A;
+    --color-sand-800: #7B766F;
+    --color-sand-900: #4C4944;
+
+    /* Primary (bronze du logo) */
+    --color-bronze-50:  #F7F2EE;
+    --color-bronze-100: #EFE5DD;
+    --color-bronze-200: #E0CBBB;
+    --color-bronze-300: #D0B299;
+    --color-bronze-400: #C19877;
+    --color-bronze-500: #9E5E2A; /* Primary */
+    --color-bronze-600: #8B5325;
+    --color-bronze-700: #75461F;
+    --color-bronze-800: #5C3718;
+    --color-bronze-900: #422712;
+
+    /* Secondaire (doré) */
+    --color-gold-50:  #FBF4ED;
+    --color-gold-100: #F8EADB;
+    --color-gold-200: #F2DABF;
+    --color-gold-300: #EDCAA4;
+    --color-gold-400: #E4B076;
+    --color-gold-500: #DB9549;
+    --color-gold-600: #C18340;
+    --color-gold-700: #A26E36;
+    --color-gold-800: #7F562A;
+    --color-gold-900: #5C3F1F;
+
+    /* Accent (complémentaire du bronze, top pour liens/focus) */
+    --color-teal-50:  #EAF0F1;
+    --color-teal-100: #D6E1E4;
+    --color-teal-200: #B7CBCF;
+    --color-teal-300: #98B5BA;
+    --color-teal-400: #659098;
+    --color-teal-500: #326B76;
+    --color-teal-600: #2C5E68;
+    --color-teal-700: #254F57;
+    --color-teal-800: #1D3E44;
+    --color-teal-900: #152D32;
+
+    /* Optionnel: utilitaires "brandés" */
+    --color-success: #2F6B3F;
+    --color-error:   #8F2E2B;
+}
