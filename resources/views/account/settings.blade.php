@@ -5,7 +5,7 @@
     </x-slot:header>
 
     @if(session('status'))
-        <div class="mb-6 rounded-xl border border-sand-300 bg-white p-4 text-sand-800">
+        <div class="mb-6 rounded-xl border border-teal-300 bg-teal-50 p-4 text-teal-600">
             {{ session('status') }}
         </div>
     @endif
@@ -28,7 +28,7 @@
 
                 <div class="flex items-center gap-4">
                     <img
-                        src="{{ $user->avatar_url }}"
+                        src="{{ $user->avatar_path }}"
                         alt="Avatar"
                         class="h-16 w-16 rounded-xl object-cover border border-sand-300"
                     >

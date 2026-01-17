@@ -39,8 +39,6 @@ class AccountSettingsController extends Controller
 
         $user->save();
 
-        return redirect()
-            ->route('account.settings')
-            ->with('status', 'Paramètres mis à jour.');
+        return back()->with('status', 'Profil mis à jour.');
     }
 }

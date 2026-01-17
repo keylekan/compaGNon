@@ -18,7 +18,7 @@
 @livewireScripts
 <header class="border-b border-sand-300 bg-white">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
-        <div class="flex h-16 items-center justify-between gap-3">
+        <div class="relative flex h-16 items-center justify-between gap-3">
             {{-- Brand --}}
             <div class="flex items-center gap-3">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 no-underline">
@@ -68,7 +68,7 @@
             </nav>
 
             {{-- User dropdown + mobile menu --}}
-            <div class="relative flex items-center gap-2" x-data="{ openUser: false, openMobile: false }">
+            <div class="flex items-center gap-2" x-data="{ openUser: false, openMobile: false }">
                 {{-- Mobile hamburger --}}
                 <button
                     type="button"
@@ -94,9 +94,11 @@
                         <div class="text-xs text-sand-700 leading-4">{{ Auth::user()->email ?? '' }}</div>
                     </div>
 
-                    <div class="grid h-9 w-9 place-items-center rounded-xl bg-bronze-100 text-bronze-800 font-semibold">
-                        {{ Str::of(Auth::user()->name ?? 'U')->substr(0, 1)->upper() }}
-                    </div>
+                    <img
+                        src="{{ Auth::user()->avatar_path }}"
+                        alt="Avatar"
+                        class="h-9 w-9 rounded-xl object-cover border border-sand-300"
+                    >
 
                     <svg class="hidden sm:block h-4 w-4 text-sand-700" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.24a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08z" clip-rule="evenodd" />
@@ -163,6 +165,92 @@
 <main class="flex-1 mx-auto max-w-6xl px-4 py-8 sm:px-6">
     {{ $slot }}
 </main>
+
+@php
+    $needsProfile = auth()->check() && blank(auth()->user()->name);
+@endphp
+
+@if($needsProfile)
+    <div
+        x-data="{ open: true }"
+        x-init="open = true"
+        @keydown.escape.window.prevent.stop
+    >
+        <x-modal title="Complétez votre profil" can-close="false">
+            <div class="space-y-4">
+                <p class="text-sm text-sand-700">
+                    Avant de continuer, renseignez votre nom. Vous pouvez aussi ajouter une image de profil.
+                </p>
+
+                <form
+                    method="POST"
+                    action="{{ route('account.settings.update') }}"
+                    enctype="multipart/form-data"
+                    class="space-y-4"
+                >
+                    @csrf
+                    @method('PUT')
+
+                    {{-- Nom --}}
+                    <div>
+                        <label for="onboarding_name" class="block text-sm font-medium text-sand-800">
+                            Prénom & Nom
+                        </label>
+                        <input
+                            id="onboarding_name"
+                            name="name"
+                            value="{{ old('name') }}"
+                            required
+                            autofocus
+                            class="mt-1 block w-full rounded-lg border border-sand-300
+                                   bg-sand-50 px-3 py-2 text-sand-900
+                                   focus:border-bronze-500 focus:outline-none
+                                   focus:ring-4 focus:ring-teal-200"
+                        >
+                        @error('name')
+                        <p class="mt-1 text-sm text-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Avatar (optionnel) --}}
+                    <div>
+                        <label class="block text-sm font-medium text-sand-800 mb-2">
+                            Photo de profil (optionnel pour vous mais utile pour nous)
+                        </label>
+
+                        <div class="flex items-center gap-4">
+                            <img
+                                src="{{ auth()->user()->avatar_path }}"
+                                alt="Avatar"
+                                class="h-14 w-14 rounded-xl object-cover border border-sand-300"
+                            >
+
+                            <input
+                                type="file"
+                                name="avatar"
+                                accept="image/*"
+                                class="text-sm text-sand-700 file:mr-4 file:rounded-lg file:border-0
+                                       file:bg-sand-100 file:px-3 file:py-2
+                                       file:text-sand-900 hover:file:bg-sand-200"
+                            >
+                        </div>
+
+                        @error('avatar')
+                        <p class="mt-1 text-sm text-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-2">
+                        {{-- pas de “Annuler” ici, pour forcer le nom --}}
+                        <x-button type="submit" variant="primary">
+                            Enregistrer
+                        </x-button>
+                    </div>
+                </form>
+            </div>
+        </x-modal>
+    </div>
+@endif
 
 <footer class="border-t border-sand-300 bg-white">
     <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-sand-700 sm:px-6">
