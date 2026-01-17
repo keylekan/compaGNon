@@ -14,7 +14,7 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <x-button class="ms-3">
+            <x-button type="submit" class="ms-3">
                 {{ __('Se connecter') }}
             </x-button>
         </div>

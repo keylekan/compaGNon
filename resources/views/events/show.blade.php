@@ -12,7 +12,7 @@
 
         $inviteLabel = match ($inviteValue) {
             'invited' => 'Invité',
-            'linked' => 'Rattaché au compte',
+            'linked' => 'Compte créé',
             'confirmed' => 'Participation confirmée',
             'cancelled' => 'Annulé',
             default => $inviteValue ?: '—',

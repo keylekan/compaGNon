@@ -36,19 +36,19 @@
                         </div>
                     </div>
 
-                    <div class="mt-2 text-sm text-sand-700 space-y-0.5">
+                    <div class="mt-2 text-sm text-bronze-500 space-y-0.5">
                         <div>
-                            <span class="text-sand-600">Race :</span>
+                            <span class="text-sand-700">Race :</span>
                             {{ $mainCharacter->race?->title ?? '—' }}
                         </div>
 
                         <div>
-                            <span class="text-sand-600">Alignement :</span>
+                            <span class="text-sand-700">Alignement :</span>
                             {{ $mainCharacter->alignment_label ?? $mainCharacter->alignment }}
                         </div>
 
                         <div>
-                            <span class="text-sand-600">Classe(s) :</span>
+                            <span class="text-sand-700">Classe(s) :</span>
                             {{ $mainCharacter->classes
                                 ->map(fn ($c) => $c->title . ' niv. ' . $c->pivot->level)
                                 ->join(', ') }}
