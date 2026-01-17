@@ -3,15 +3,18 @@
 use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Logout;
 use App\Http\Controllers\MagicLinkController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
-    Route::view('/', 'home')->name('home');
+    Route::get('/', HomeController::class)->name('home');
 
     Route::resource('characters', CharacterController::class);
-    Route::resource('events', EventController::class)->only(['index', 'show']);
+    Route::resource('events', EventController::class);
+    Route::post('/events/{event}/invite', [EventController::class, 'invite'])
+        ->name('events.invite');
 
     // User settings
     Route::get('/account/settings', [AccountSettingsController::class, 'edit'])

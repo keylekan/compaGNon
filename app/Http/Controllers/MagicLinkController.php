@@ -42,6 +42,8 @@ class MagicLinkController extends Controller
     {
         $user = User::createOrFirst(['email' => request()->email], ['name' => '', 'password' => '']);
 
+        $user->attachPendingEventRegistrations();
+
         Auth::login($user, true);
 
         Log::info('User logged in via token.', ['email' => $user->email]);

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\InviteStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'admin',
     ];
 
     /**
@@ -47,10 +50,33 @@ class User extends Authenticatable
         ];
     }
 
-    public function getAvatarUrlAttribute(): string
+    public function avatarPath(): Attribute
     {
-        return $this->avatar_path
-            ? Storage::url($this->avatar_path)
-            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
+        return Attribute::make(
+            get: fn (string | null $value) => $value ? Storage::url($value) : 'https://ui-avatars.com/api/?name=' . urlencode($this->name),
+        );
+    }
+
+    public function characters()
+    {
+        return $this->hasMany(Character::class);
+    }
+
+    public function mainCharacter()
+    {
+        return $this->hasOne(Character::class)->latestOfMany();
+    }
+
+    public function attachPendingEventRegistrations(): void
+    {
+        EventRegistration::query()
+            ->where('email', $this->email)
+            ->whereNull('user_id')
+            ->update([
+                'user_id' => $this->id,
+                'invite_status' => InviteStatus::LINKED,
+                'linked_at' => now(),
+                'updated_at' => now(),
+            ]);
     }
 }
