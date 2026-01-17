@@ -17,9 +17,18 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $admin = User::firstWhere(['email' => 'admin@lesderniersdesolace.com']);
+        if (! $admin) {
+            User::factory()->create([
+                'name' => 'Admin LDS',
+                'email' => 'admin@lesderniersdesolace.com',
+                'admin' => true,
+            ]);
+        }
+
+        $this->call([
+            PlayableRaceSeeder::class,
+            PlayableClassSeeder::class,
         ]);
     }
 }
