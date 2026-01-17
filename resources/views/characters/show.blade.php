@@ -1,6 +1,5 @@
 <x-app-layout>
-    <div class="max-w-5xl mx-auto px-4 py-8 space-y-6">
-
+    <div class="space-y-6">
         {{-- En-tête --}}
         <div class="flex items-center justify-between">
             <div>
@@ -13,18 +12,18 @@
             </div>
 
             <div class="flex gap-2">
-                <x-button variant="secondary" size="sm" href="{{ route('characters.edit', $character) }}">
+                <x-button-link size="sm" href="{{ route('characters.edit', $character) }}" disabled>
                     Modifier
-                </x-button>
+                </x-button-link>
 
-                <x-button variant="ghost" size="sm" href="{{ route('characters.index') }}">
-                    Retour
-                </x-button>
+                <x-button-link variant="secondary" size="sm" href="{{ route('characters.index') }}">
+                    ← Retour
+                </x-button-link>
             </div>
         </div>
 
         {{-- Carte identité --}}
-        <div class="bg-bronze-50 border border-bronze-200 rounded-lg p-6">
+        <x-panel main>
             <h2 class="text-lg font-medium text-bronze-700 mb-4">
                 Identité
             </h2>
@@ -52,10 +51,10 @@
                     <dd class="text-sand-900">À venir</dd>
                 </div>
             </dl>
-        </div>
+        </x-panel>
 
         {{-- Classes --}}
-        <div class="bg-bronze-50 border border-bronze-200 rounded-lg p-6">
+        <x-panel main>
             <h2 class="text-lg font-medium text-bronze-700 mb-4">
                 Classe{{ $character->classes->count() > 1 ? 's' : '' }}
             </h2>
@@ -72,7 +71,7 @@
                     </li>
                 @endforeach
             </ul>
-        </div>
+        </x-panel>
 
         {{-- Placeholder progression --}}
         <div class="bg-sand-50 border border-dashed border-bronze-400 rounded-lg p-6 text-sm text-bronze-300">
@@ -81,6 +80,5 @@
                 seront affichés ici ultérieurement.
             </p>
         </div>
-
     </div>
 </x-app-layout>

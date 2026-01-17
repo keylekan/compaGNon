@@ -16,6 +16,8 @@
         'bg-bronze-500 text-white hover:bg-bronze-600',
       'secondary' =>
         'border border-sand-200 bg-white text-sand-700 hover:bg-sand-50',
+      'panel' =>
+        'bg-sand-100' . (! $disabled ? ' hover:bg-sand-200' : ''),
       'ghost' =>
         'text-sand-700 hover:bg-sand-100',
       'danger' =>

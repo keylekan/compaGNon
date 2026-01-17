@@ -33,8 +33,8 @@
                         ->join(', ');
                 @endphp
 
-                <li class="bg-bronze-50 border border-bronze-200 rounded-lg hover:bg-bronze-100 transition">
-                    <a href="{{ route('characters.show', $character) }}" class="block px-5 py-4">
+                <li class="bg-bronze-50 shadow-sm rounded-lg border border-sand-200 hover:border-bronze-300 transition">
+                    <a href="{{ route('characters.show', $character) }}" class="block p-5">
                         <div class="flex items-start justify-between gap-4">
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
@@ -49,7 +49,7 @@
                                     @endif
                                 </div>
 
-                                <div class="mt-1 text-sm text-bronze-500 flex flex-wrap gap-4">
+                                <div class="mt-1 text-sm text-bronze-500 flex flex-wrap gap-x-4 gap-y-1">
                                     <span>
                                         <span class="text-sand-700">Race :</span>
                                         {{ $character->race?->title ?? '—' }}

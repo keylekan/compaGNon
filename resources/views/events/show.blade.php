@@ -76,8 +76,8 @@
             </div>
 
             <div class="flex shrink-0 gap-2">
-                <x-button-link href="{{ route('events.index') }}" variant="ghost" size="sm">
-                    Retour
+                <x-button-link href="{{ route('events.index') }}" variant="secondary" size="sm">
+                    ← Retour
                 </x-button-link>
             </div>
         </div>
@@ -114,14 +114,14 @@
 
         {{-- Bloc "Participation" : masqué une fois confirmé --}}
         @if(!is_null($registration) && $inviteValue !== 'confirmed')
-            <div class="rounded-xl border border-sand-200 bg-white p-6 shadow-sm">
+            <x-panel>
                 <h2 class="text-lg font-semibold text-sand-950">Participation</h2>
                 <p class="mt-1 text-sm text-sand-700">
                     Pour confirmer votre présence, choisissez le personnage qui participera (paiement géré à part).
                 </p>
 
                 <?php
-                    $characters = auth()->user()->characters
+                    $characters = auth()->user()->characters->sortByDesc('created_at')
                 ?>
 
                 <div class="mt-4">
@@ -238,12 +238,12 @@
                         </form>
                     @endif
                 </div>
-            </div>
+            </x-panel>
         @endif
 
     @can('invite', $event)
         {{-- Admin / Orga : inviter des emails --}}
-        <div class="rounded-xl border border-sand-200 bg-white p-6 shadow-sm">
+        <x-panel>
             <div class="flex items-start justify-between gap-4">
                 <div>
                     <h2 class="text-lg font-semibold text-sand-950">Inviter des participants</h2>
@@ -295,7 +295,7 @@
                     </div>
 
                     <div class="flex items-end">
-                        <x-button type="submit" variant="secondary">
+                        <x-button type="submit" variant="panel">
                             Traiter les invitations
                         </x-button>
                     </div>
@@ -307,7 +307,7 @@
                     </div>
                 @endif
             </form>
-        </div>
+        </x-panel>
         @endcan
     </div>
 </x-app-layout>

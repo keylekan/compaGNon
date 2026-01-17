@@ -37,7 +37,7 @@
                     @endphp
 
                     <a href="{{ route('events.show', $event) }}"
-                       class="group rounded-xl border border-sand-200 bg-white p-5 shadow-sm transition hover:border-bronze-300 hover:shadow">
+                       class="rounded-xl border border-sand-200 bg-white p-5 shadow-sm transition hover:border-bronze-300">
                         <div class="flex items-start justify-between gap-4">
                             <div class="min-w-0">
                                 <div class="flex items-center gap-3">

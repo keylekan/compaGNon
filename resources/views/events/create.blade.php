@@ -12,27 +12,29 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('events.store') }}" class="space-y-4">
+    <form method="POST" action="{{ route('events.store') }}">
         @csrf
 
-        <x-input label="Titre" name="title" full required />
+        <x-panel class="space-y-4">
+            <x-input label="Titre" name="title" full required />
 
-        <div class="flex gap-3">
-            <x-input type="datetime-local" label="Début" name="starts_at" required />
-            <x-input type="datetime-local" label="Fin" name="ends_at" />
-        </div>
+            <div class="flex gap-3">
+                <x-input type="datetime-local" label="Début" name="starts_at" required />
+                <x-input type="datetime-local" label="Fin" name="ends_at" />
+            </div>
 
-        <x-select label="Type" name="type">
-            @foreach ($types as $type)
-                <option value="{{ $type->value }}">{{ $type->label() }}</option>
-            @endforeach
-        </x-select>
+            <x-select label="Type" name="type">
+                @foreach ($types as $type)
+                    <option value="{{ $type->value }}">{{ $type->label() }}</option>
+                @endforeach
+            </x-select>
 
-        <label class="flex items-center gap-2">
-            <input type="checkbox" name="is_published" value="1">
-            <span>Publier immédiatement</span>
-        </label>
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="is_published" value="1">
+                <span>Publier immédiatement</span>
+            </label>
 
-        <x-button type="submit">Créer l’événement</x-button>
+            <x-button type="submit">Créer l’événement</x-button>
+        </x-panel>
     </form>
 </x-app-layout>

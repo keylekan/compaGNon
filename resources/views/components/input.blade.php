@@ -14,7 +14,7 @@
       'important' =>
         'border-2 border-sand-500 bg-bronze-100 focus:outline focus:outline-sand-700 focus:border-sand-700 shadow-sm',
       'default' =>
-        'border border-sand-200 bg-white focus:outline-none focus:ring-2 focus:ring-bronze-400/50',
+        'border border-bronze-100 bg-white focus:outline-none focus:ring-2 focus:ring-bronze-400/50',
     ];
 @endphp
 

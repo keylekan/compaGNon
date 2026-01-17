@@ -10,7 +10,7 @@
             $mainCharacter = auth()->user()->mainCharacter;
         @endphp
 
-        <section class="rounded-2xl border border-sand-300 bg-white p-6 lg:col-span-1 self-start">
+        <x-panel class="lg:col-span-1 self-start">
             <div class="flex items-start justify-between gap-3">
                 <div>
                     <h2 class="text-lg font-semibold">Mon personnage</h2>
@@ -67,10 +67,10 @@
                     </div>
                 </div>
             @endif
-        </section>
+        </x-panel>
 
         {{-- Événements à venir --}}
-        <section class="rounded-2xl border border-sand-300 bg-white p-6 lg:col-span-2">
+        <x-panel class="lg:col-span-2">
             <div class="flex items-start justify-between gap-3">
                 <div>
                     <h2 class="text-lg font-semibold">Événements à venir</h2>
@@ -155,6 +155,6 @@
                     @endforeach
                 </ul>
             @endif
-        </section>
+        </x-panel>
     </div>
 </x-app-layout>
