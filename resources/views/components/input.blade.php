@@ -33,6 +33,6 @@
     >
 
     @error($name)
-    <p class="text-sm text-bronze-800">{{ $message }}</p>
+    <p class="text-sm text-red-800 px-2">{{ $message }}</p>
     @enderror
 </div>

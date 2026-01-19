@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\CharacterController;
+use App\Http\Controllers\CharacterTeamController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\HomeController;
@@ -13,6 +14,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', HomeController::class)->name('home');
 
     Route::resource('characters', CharacterController::class);
+    Route::post('/characters/{character}/team', [CharacterTeamController::class, 'store'])
+        ->name('characters.team.store');
+
+    Route::post('/characters/{character}/team/join', [CharacterTeamController::class, 'join'])
+        ->name('characters.team.join');
+
+    Route::delete('/characters/{character}/team', [CharacterTeamController::class, 'leave'])
+        ->name('characters.team.leave');
+
     Route::resource('events', EventController::class);
     Route::post('/events/{event}/invite', [EventController::class, 'invite'])
         ->name('events.invite');

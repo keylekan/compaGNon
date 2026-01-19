@@ -2,6 +2,16 @@
   'size' => '6xl',
 ])
 
+<?php
+    $sizes = [
+        '2xl' => 'max-w-2xl',
+        '3xl' => 'max-w-3xl',
+        '4xl' => 'max-w-4xl',
+        '5xl' => 'max-w-5xl',
+        '6xl' => 'max-w-6xl',
+    ];
+?>
+
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -166,7 +176,7 @@
     </div>
 @endisset
 
-<main class="w-full flex-1 mx-auto max-w-{{$size}} px-4 py-8 sm:px-6">
+<main class="w-full flex-1 mx-auto {{$sizes[$size] ?? 'max-w-6xl'}} px-4 py-8 sm:px-6">
     {{ $slot }}
 </main>
 

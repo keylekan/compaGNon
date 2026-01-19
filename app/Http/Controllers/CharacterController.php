@@ -76,6 +76,10 @@ class CharacterController extends Controller
         abort_unless($user->admin || $character->user_id === $user->id, 403);
 
         $character->load(['race', 'classes']);
+        $character->load(['team.characters' => function ($q) {
+            $q->orderBy('name');
+        }]);
+
         $nextPendingEvent = Event::query()
             ->whereHas('registrations', function ($q) use ($user) {
                 $q->where('user_id', $user->id)

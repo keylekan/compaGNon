@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Character extends Model
@@ -46,17 +48,22 @@ class Character extends Model
         return "{$law[$l]} {$mor[$m]}";
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function race()
+    public function race(): BelongsTo
     {
         return $this->belongsTo(PlayableRace::class, 'race_id');
     }
 
-    public function classes()
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function classes(): BelongsToMany
     {
         return $this->belongsToMany(
             PlayableClass::class,

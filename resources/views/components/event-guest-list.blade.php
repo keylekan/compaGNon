@@ -101,10 +101,14 @@
                         ->join(', ');
             @endphp
 
-            <div class="p-2 hover:bg-sand-200 transition">
-                <div class="grid gap-2 sm:grid-cols-7 md:grid-cols-12 md:items-center">
+            <a
+                href="{{ route('characters.show', $char) }}"
+                target="_blank"
+                class="cursor-pointer block p-2 hover:bg-sand-200 transition"
+            >
+                <div class="grid gap-2 sm:grid-cols-7 md:grid-cols-16 md:items-center">
                     {{-- Joueur --}}
-                    <div class="sm:col-span-3 md:col-span-3">
+                    <div class="sm:col-span-3 md:col-span-4">
                         <div class="text-sm font-semibold">
                             {{ $userName }}
                         </div>
@@ -114,10 +118,15 @@
                     </div>
 
                     {{-- Perso --}}
-                    <div class="sm:col-span-4 md:col-span-4">
+                    <div class="sm:col-span-4 md:col-span-6">
                         @if($char)
                             <div class="text-sm">
                                 <span class="font-semibold">{{ $charName }}</span>
+                                @if($char->team)
+                                    <span class="font-medium opacity-90">
+                                        ({{ $char->team->name }})
+                                    </span>
+                                @endif
                                 <span class="opacity-70">, {{ $charGender }}, {{ $alignCode }}</span>
                             </div>
                             <div class="text-sm text-bronze-500">
@@ -131,7 +140,7 @@
                     </div>
 
                     {{-- Statut invitation --}}
-                    <div class="sm:col-span-3 md:col-span-3">
+                    <div class="sm:col-span-3 md:col-span-4">
                         <div class="text-xs opacity-70 mb-1">Invitation</div>
                         <x-badge-invite :status="$reg->invite_status" />
                     </div>
@@ -142,7 +151,7 @@
                         <x-badge-payment :status="$reg->payment_status"/>
                     </div>
                 </div>
-            </div>
+            </a>
         @empty
             <div class="p-6 text-sm opacity-80">
                 Aucun invité ne correspond aux filtres.

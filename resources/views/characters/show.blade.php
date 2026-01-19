@@ -1,5 +1,8 @@
 <x-app-layout size="4xl">
     <div class="space-y-6">
+        @php
+            $isOwner = auth()->id() === $character->user_id;
+        @endphp
 
         {{-- En-tête --}}
         <div class="flex items-center justify-between">
@@ -29,8 +32,14 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="rounded-lg border border-b-red-800 bg-sand-200 px-4 py-3 text-sm text-red-800">
+                {{ session('error') }}
+            </div>
+        @endif
+
         {{-- Encart : prochain événement non confirmé --}}
-        @if(!empty($nextPendingEvent))
+        @if($isOwner && !empty($nextPendingEvent))
             <div class="rounded-xl border border-gold-200 bg-gold-50 p-5 shadow-sm">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -68,6 +77,8 @@
                 </div>
             </div>
         @endif
+
+        <x-panel-character-team :character="$character" :canEdit="$isOwner" />
 
         {{-- Panel unique : identité + race + classes --}}
         <x-panel main>
@@ -169,16 +180,20 @@
                         <p class="text-sm font-semibold text-bronze-900">
                             BG / Intentions de jeu
                         </p>
-                        <p class="mt-1 text-sm text-sand-700">
-                            500 caractères max. Les orgas écriront un BG plus complet pour l’histoire.
-                        </p>
+                        @if($canEditNotes)
+                            <p class="mt-1 text-sm text-sand-700">
+                                500 caractères max. Les orgas écriront un BG plus complet pour l’histoire.
+                            </p>
+                        @endif
                     </div>
 
-                    <span class="shrink-0 rounded-full border border-sand-200 bg-sand-50 px-3 py-1 text-xs text-sand-700">
-                        <span x-data="{ len: {{ strlen(old('player_notes', $character->player_notes ?? '')) }} }">
-                            <span x-text="len"></span>/500
+                    @if($canEditNotes)
+                        <span class="shrink-0 rounded-full border border-sand-200 bg-sand-50 px-3 py-1 text-xs text-sand-700">
+                            <span x-data="{ len: {{ strlen(old('player_notes', $character->player_notes ?? '')) }} }">
+                                <span x-text="len"></span>/500
+                            </span>
                         </span>
-                    </span>
+                    @endif
                 </div>
 
                 <form method="POST" action="{{ route('characters.update', $character) }}" class="mt-4 space-y-3">
@@ -188,23 +203,30 @@
                     <div
                         x-data="{ len: {{ strlen(old('player_notes', $character->player_notes ?? '')) }} }"
                     >
-                        <textarea
-                            name="player_notes"
-                            rows="5"
-                            maxlength="500"
-                            @input="len = $event.target.value.length"
-                            class="w-full rounded-xl border border-sand-200 bg-sand-50 px-4 py-3 text-sm text-sand-900 placeholder:text-sand-600 focus:border-bronze-400 focus:ring-2 focus:ring-bronze-200 disabled:opacity-60"
-                            placeholder="Ex : des détails sur ton passé, un objectif, un conflit, une relation importante…"
-                            {{ $canEditNotes ? '' : 'disabled' }}
-                        >{{ old('player_notes', $character->player_notes) }}</textarea>
+                        @if($canEditNotes)
+                            <textarea
+                                name="player_notes"
+                                rows="5"
+                                maxlength="500"
+                                @input="len = $event.target.value.length"
+                                class="w-full rounded-xl border border-sand-200 bg-sand-50 px-4 py-3 text-sm text-sand-900 placeholder:text-sand-600 focus:border-bronze-400 focus:ring-2 focus:ring-bronze-200 disabled:opacity-60"
+                                placeholder="Ex : des détails sur ton passé, un objectif, un conflit, une relation importante…"
+                            >{{ old('player_notes', $character->player_notes) }}</textarea>
 
-                        @error('player_notes')
-                        <p class="mt-2 text-sm text-red-700">{{ $message }}</p>
-                        @enderror
+                            @error('player_notes')
+                            <p class="mt-2 text-sm text-red-700">{{ $message }}</p>
+                            @enderror
 
-                        <p class="mt-2 text-xs text-sand-600">
-                            <span x-text="len"></span>/500 caractères
-                        </p>
+                            <p class="mt-2 text-xs text-sand-600">
+                                <span x-text="len"></span>/500 caractères
+                            </p>
+                        @elseif($character->player_notes)
+                            <p class="text-sm text-sand-900">{{$character->player_notes}}</p>
+                        @else
+                            <p class="mt-2 text-sm text-sand-700 italic">
+                                Aucun background renseigné.
+                            </p>
+                        @endif
                     </div>
 
                     <div class="flex items-center justify-end gap-2">
