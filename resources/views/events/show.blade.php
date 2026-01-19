@@ -1,7 +1,9 @@
-<x-app-layout>
+<x-app-layout size="4xl">
     @php
         $starts = $event->starts_at?->format('d/m/Y H:i');
         $ends = $event->ends_at?->format('d/m/Y H:i');
+        $registration = $event->myRegistration;
+        $hasInvitations = $event->registrations()->exists();
 
         $invite = $registration?->invite_status;
         $payment = $registration?->payment_status;
@@ -9,38 +11,6 @@
         // Helpers d'affichage (compat enum ou string)
         $inviteValue = is_object($invite) && property_exists($invite, 'value') ? $invite->value : (string) $invite;
         $paymentValue = is_object($payment) && property_exists($payment, 'value') ? $payment->value : (string) $payment;
-
-        $inviteLabel = match ($inviteValue) {
-            'invited' => 'Invité',
-            'linked' => 'Compte créé',
-            'confirmed' => 'Participation confirmée',
-            'cancelled' => 'Annulé',
-            default => $inviteValue ?: '—',
-        };
-
-        $paymentLabel = match ($paymentValue) {
-            'unknown' => 'Inconnu',
-            'unpaid' => 'Non payé',
-            'paid' => 'Payé',
-            'refunded' => 'Remboursé',
-            default => $paymentValue ?: '—',
-        };
-
-        $inviteBadgeClasses = match ($inviteValue) {
-            'confirmed' => 'border-teal-200 bg-teal-50 text-teal-800',
-            'linked' => 'border-gold-200 bg-gold-50 text-sand-900',
-            'invited' => 'border-sand-200 bg-sand-50 text-sand-700',
-            'cancelled' => 'border-sand-200 bg-sand-50 text-sand-500',
-            default => 'border-sand-200 bg-sand-50 text-sand-700',
-        };
-
-        $paymentBadgeClasses = match ($paymentValue) {
-            'paid' => 'border-teal-200 bg-teal-50 text-teal-800',
-            'unpaid' => 'border-bronze-200 bg-bronze-50 text-bronze-900',
-            'unknown' => 'border-sand-200 bg-sand-50 text-sand-700',
-            'refunded' => 'border-sand-200 bg-sand-50 text-sand-500',
-            default => 'border-sand-200 bg-sand-50 text-sand-700',
-        };
     @endphp
 
     <div class="space-y-6">
@@ -64,15 +34,12 @@
                     @endif
                 </p>
 
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium {{ $inviteBadgeClasses }}">
-                        Statut : {{ $inviteLabel }}
-                    </span>
-
-                    <span class="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium {{ $paymentBadgeClasses }}">
-                        Paiement : {{ $paymentLabel }}
-                    </span>
-                </div>
+                @if(!is_null($registration))
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <x-badge-invite :status="$registration->invite_status" />
+                        <x-badge-payment :status="$registration->payment_status" />
+                    </div>
+                @endif
             </div>
 
             <div class="flex shrink-0 gap-2">
@@ -82,9 +49,15 @@
             </div>
         </div>
 
+        @if (session('success'))
+            <div class="rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm text-teal-900">
+                {{ session('success') }}
+            </div>
+        @endif
+
         {{-- Bloc "Mon personnage" : visible seulement si participation confirmée --}}
         @if($inviteValue === 'confirmed' && $registration?->character)
-            <div class="rounded-xl border border-sand-200 bg-white p-6 shadow-sm">
+            <x-panel>
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <h2 class="text-lg font-semibold text-sand-950">Mon personnage</h2>
@@ -98,18 +71,8 @@
                     </x-button-link>
                 </div>
 
-                <div class="mt-4 rounded-lg border border-sand-200 bg-sand-50 p-4">
-                    <p class="text-base font-semibold text-sand-950">
-                        {{ $registration->character->name ?? 'Personnage' }}
-                    </p>
-
-                    <p class="mt-1 text-sm text-sand-700">
-                        {{ $registration->character->race?->name ?? 'Race ?' }}
-                        · {{ $registration->character->class?->name ?? 'Classe ?' }}
-                        · Niveau {{ $registration->character->level ?? '?' }}
-                    </p>
-                </div>
-            </div>
+                <x-character-card :character="$registration->character" />
+            </x-panel>
         @endif
 
         {{-- Bloc "Participation" : masqué une fois confirmé --}}
@@ -148,7 +111,7 @@
                         {{-- Dropdown + validation --}}
                         <form
                             method="POST"
-                            {{-- action="{{ route('events.registrations.confirm', $event) }}" --}}
+                            action="{{ route('events.registrations.confirm', $event) }}"
                             class="rounded-lg border border-sand-200 bg-sand-50 p-4"
                             x-data="{
                         open: false,
@@ -241,73 +204,112 @@
             </x-panel>
         @endif
 
-    @can('invite', $event)
-        {{-- Admin / Orga : inviter des emails --}}
-        <x-panel>
-            <div class="flex items-start justify-between gap-4">
+        @can('invite', $event){{-- Admin / Orga : inviter des emails --}}
+        <x-panel
+            x-data="{ open: {{ $hasInvitations ? 'false' : 'true' }} }"
+        >
+            <button
+                type="button"
+                @click="open = !open"
+                class="flex w-full items-center justify-between gap-4 text-left cursor-pointer"
+            >
                 <div>
-                    <h2 class="text-lg font-semibold text-sand-950">Inviter des participants</h2>
+                    <h2 class="text-lg font-semibold text-sand-950">
+                        Inviter des participants
+                    </h2>
                     <p class="mt-1 text-sm text-sand-700">
                         Ajoutez une liste d’emails. S’il existe déjà un compte, il sera rattaché immédiatement.
                     </p>
                 </div>
-            </div>
+                {{-- Chevron --}}
+                <svg
+                    class="ml-1 h-5 w-5 transform transition-transform duration-200
+                       group-hover:text-bronze-900"
+                    :class="open ? 'rotate-0' : '-rotate-90'"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
 
-            {{-- À restreindre plus tard via @can('manage', $event) --}}
-            <form method="POST" action="{{ route('events.invite', $event) }}" class="mt-4 space-y-4">
-                @csrf
+            {{-- Contenu repliable --}}
+            <div
+                x-show="open"
+                x-collapse
+                x-cloak
+                class="mt-4"
+            >
+                {{-- À restreindre plus tard via @can('manage', $event) --}}
+                <form
+                    method="POST"
+                    action="{{ route('events.invite', $event) }}"
+                    class="space-y-4"
+                >
+                    @csrf
 
-                <div>
-                    <label class="block text-sm font-medium text-sand-900" for="emails">Emails</label>
-                    <p class="mt-1 text-xs text-sand-600">
-                        Un par ligne, ou séparés par virgule/point-virgule/espace.
-                    </p>
-                    <textarea
-                        id="emails"
-                        name="emails"
-                        rows="6"
-                        class="mt-2 w-full rounded-lg border border-sand-200 bg-white px-3 py-2 text-sm text-sand-900 shadow-sm focus:border-bronze-400 focus:outline-none focus:ring-2 focus:ring-bronze-200"
-                        placeholder="ex: arthur@exemple.com&#10;merlin@exemple.com"
-                        required
-                    >{{ old('emails') }}</textarea>
-                    @error('emails')
-                    <p class="mt-2 text-sm text-bronze-800">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label class="block text-sm font-medium text-sand-900" for="payment_status">Statut de paiement</label>
-                        <select
-                            id="payment_status"
-                            name="payment_status"
-                            class="mt-2 w-full rounded-lg border border-sand-200 bg-white px-3 py-2 text-sm text-sand-900 shadow-sm focus:border-bronze-400 focus:outline-none focus:ring-2 focus:ring-bronze-200"
-                        >
-                            <option value="">— Ne pas modifier —</option>
-                            <option value="unknown" @selected(old('payment_status') === 'unknown')>Inconnu</option>
-                            <option value="unpaid" @selected(old('payment_status') === 'unpaid')>Non payé</option>
-                            <option value="paid" @selected(old('payment_status') === 'paid')>Payé</option>
-                            <option value="refunded" @selected(old('payment_status') === 'refunded')>Remboursé</option>
-                        </select>
-                        @error('payment_status')
+                        <label class="block text-sm font-medium text-sand-900" for="emails">
+                            Emails
+                        </label>
+                        <p class="mt-1 text-xs text-sand-600">
+                            Un par ligne, ou séparés par virgule / point-virgule / espace.
+                        </p>
+
+                        <textarea
+                            id="emails"
+                            name="emails"
+                            rows="6"
+                            class="mt-2 w-full rounded-lg border border-sand-200 bg-white px-3 py-2 text-sm text-sand-900 shadow-sm
+                           focus:border-bronze-400 focus:outline-none focus:ring-2 focus:ring-bronze-200"
+                            placeholder="ex: arthur@exemple.com&#10;merlin@exemple.com"
+                            required
+                        >{{ old('emails') }}</textarea>
+
+                        @error('emails')
                         <p class="mt-2 text-sm text-bronze-800">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div class="flex items-end">
-                        <x-button type="submit" variant="panel">
-                            Traiter les invitations
-                        </x-button>
-                    </div>
-                </div>
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label class="block text-sm font-medium text-sand-900" for="payment_status">
+                                Statut de paiement
+                            </label>
 
-                @if (session('success'))
-                    <div class="rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm text-teal-900">
-                        {{ session('success') }}
+                            <select
+                                id="payment_status"
+                                name="payment_status"
+                                class="mt-2 w-full rounded-lg border border-sand-200 bg-white px-3 py-2 text-sm text-sand-900 shadow-sm
+                               focus:border-bronze-400 focus:outline-none focus:ring-2 focus:ring-bronze-200"
+                            >
+                                <option value="">— Ne pas modifier —</option>
+                                <option value="unknown" @selected(old('payment_status') === 'unknown')>Inconnu</option>
+                                <option value="unpaid" @selected(old('payment_status') === 'unpaid')>Non payé</option>
+                                <option value="paid" @selected(old('payment_status') === 'paid')>Payé</option>
+                                <option value="refunded" @selected(old('payment_status') === 'refunded')>Remboursé</option>
+                            </select>
+
+                            @error('payment_status')
+                            <p class="mt-2 text-sm text-bronze-800">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-end">
+                            <x-button type="submit" variant="panel">
+                                Traiter les invitations
+                            </x-button>
+                        </div>
                     </div>
-                @endif
-            </form>
+                </form>
+            </div>
         </x-panel>
+
+        <x-event-guest-list :registrations="$registrations" :filters="$registrationsFilters" />
         @endcan
     </div>
 </x-app-layout>

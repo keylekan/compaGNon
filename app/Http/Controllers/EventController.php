@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\InviteUsersToEventAction;
 use App\Enums\EventType;
 use App\Models\Event;
+use App\Services\EventRegistrationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\Enum;
@@ -72,25 +73,22 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Event $event)
+    public function show(Request $request, Event $event, EventRegistrationService $registrationService)
     {
-        if (! $event->is_published && ! $request->user()->admin) {
-            abort(404);
-        }
-
         Gate::authorize('view', $event);
 
         $user = $request->user();
 
-        $registration = $event->registrations()
-            ->where(function ($q) use ($user) {
-                $q->where('user_id', $user->id)
-                    ->orWhere('email', $user->email);
-            })
-            ->with('character')
-            ->first();
+        $isAdmin = $request->user()->admin;
+        $registrations = null;
+        $registrationsFilters = null;
 
-        return view('events.show', compact('event', 'registration'));
+        if ($isAdmin) {
+            $registrations = $registrationService->paginatedForEvent($event, $request);
+            $registrationsFilters = $registrationService->filtersFrom($request);
+        }
+
+        return view('events.show', compact('event', 'registrations', 'registrationsFilters'));
     }
 
     /**
@@ -98,7 +96,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        Gate::authorize('invite', $event);
+        Gate::authorize('update', $event);
         //
     }
 
@@ -107,7 +105,7 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        Gate::authorize('invite', $event);
+        Gate::authorize('update', $event);
         //
     }
 

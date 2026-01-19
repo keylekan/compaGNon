@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout size="2xl">
     <h1 class="text-xl font-semibold mb-6">Créer un événement</h1>
 
     @if ($errors->any())

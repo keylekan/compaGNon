@@ -23,38 +23,7 @@
 
             @if ($mainCharacter)
                 {{-- Personnage principal --}}
-                <a href="{{ route('characters.show', $mainCharacter) }}"
-                   class="block mt-4 rounded-xl border border-bronze-200 bg-sand-50 p-4">
-                    <div class="flex items-start justify-between gap-4">
-                        <h3 class="text-base font-semibold text-sand-900 truncate">
-                            {{ $mainCharacter->name }}
-                        </h3>
-                        <div class="shrink-0">
-                            <x-button size="sm" href="{{ route('characters.show', $mainCharacter) }}">
-                                Voir la fiche
-                            </x-button>
-                        </div>
-                    </div>
-
-                    <div class="mt-2 text-sm text-bronze-500 space-y-0.5">
-                        <div>
-                            <span class="text-sand-700">Race :</span>
-                            {{ $mainCharacter->race?->title ?? '—' }}
-                        </div>
-
-                        <div>
-                            <span class="text-sand-700">Alignement :</span>
-                            {{ $mainCharacter->alignment_label ?? $mainCharacter->alignment }}
-                        </div>
-
-                        <div>
-                            <span class="text-sand-700">Classe(s) :</span>
-                            {{ $mainCharacter->classes
-                                ->map(fn ($c) => $c->title . ' niv. ' . $c->pivot->level)
-                                ->join(', ') }}
-                        </div>
-                    </div>
-                </a>
+                <x-character-card :character="$mainCharacter" />
             @else
                 {{-- État vide --}}
                 <div class="mt-4 rounded-xl bg-sand-50 p-4 text-sm text-sand-800">
@@ -112,13 +81,23 @@
                         <li class="flex items-center justify-between gap-4 py-4">
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
-                            <span class="font-medium text-sand-950 truncate">
-                                {{ $event->title }}
-                            </span>
+                                    <span class="font-medium text-sand-950 truncate">
+                                        {{ $event->title }}
+                                    </span>
 
                                     <span class="inline-flex items-center rounded-full border border-sand-200 bg-sand-50 px-2 py-0.5 text-xs font-medium text-sand-700">
-                                {{ method_exists($event->type, 'label') ? $event->type->label() : strtoupper((string) $event->type) }}
-                            </span>
+                                        {{ method_exists($event->type, 'label') ? $event->type->label() : strtoupper((string) $event->type) }}
+                                    </span>
+
+                                    @php
+                                        $eventCharacter = $event->myRegistration?->character;
+                                    @endphp
+
+                                    @if($eventCharacter)
+                                        <span class="text-xs text-sand-800 font-medium">Enregistré avec {{$eventCharacter->name}}</span>
+                                    @elseif($event->myRegistration)
+                                        <span class="text-xs text-bronze-500 font-medium">Vous devez encore vous enregistrer</span>
+                                    @endif
                                 </div>
 
                                 <div class="mt-1 text-sm text-sand-700">

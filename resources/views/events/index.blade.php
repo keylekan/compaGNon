@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout size="4xl">
     <div class="space-y-6">
         {{-- Header --}}
         <div class="flex items-start justify-between gap-4">
@@ -39,6 +39,10 @@
                     <a href="{{ route('events.show', $event) }}"
                        class="rounded-xl border border-sand-200 bg-white p-5 shadow-sm transition hover:border-bronze-300">
                         <div class="flex items-start justify-between gap-4">
+                            @php
+                                $eventCharacter = $event->myRegistration?->character;
+                            @endphp
+
                             <div class="min-w-0">
                                 <div class="flex items-center gap-3">
                                     <h2 class="truncate text-lg font-semibold text-sand-950 group-hover:text-bronze-700">
@@ -49,6 +53,12 @@
                                     <span class="inline-flex items-center rounded-full border border-sand-200 bg-sand-50 px-2 py-0.5 text-xs font-medium text-sand-700">
                                         {{ method_exists($event->type, 'label') ? $event->type->label() : strtoupper((string) $event->type) }}
                                     </span>
+
+                                    @if($eventCharacter)
+                                        <span class="text-xs text-sand-800 font-medium">Enregistré avec {{$eventCharacter->name}}</span>
+                                    @elseif($event->myRegistration)
+                                        <span class="text-xs text-bronze-500 font-medium">Vous devez encore vous enregistrer</span>
+                                    @endif
                                 </div>
 
                                 <p class="mt-2 text-sm text-sand-700">
@@ -59,15 +69,18 @@
                                     @endif
                                 </p>
 
-                                <p class="mt-3 text-sm text-sand-600">
-                                    Cliquez pour voir les détails, confirmer votre participation et rattacher votre personnage.
+                                <p class="mt-3 text-sm text-sand-700">
+                                    Cliquez pour voir les détails
+                                    @if(!$eventCharacter)
+                                        , confirmer votre participation et rattacher votre personnage.
+                                    @endif
                                 </p>
                             </div>
 
                             <div class="shrink-0">
-                                <span class="inline-flex items-center rounded-lg border border-sand-200 bg-sand-50 px-3 py-1 text-sm text-sand-700">
+                                <span class="inline-flex items-center rounded-lg border border-sand-200 bg-sand-50 px-3 py-1 text-sm text-sand-800">
                                     Voir
-                                    <span class="ml-2 text-sand-400">→</span>
+                                    <span class="ml-2 text-sand-600">→</span>
                                 </span>
                             </div>
                         </div>

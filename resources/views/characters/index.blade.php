@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout size="4xl">
     {{-- En-tête --}}
     <div class="flex items-start justify-between gap-4 mb-4">
         <div>

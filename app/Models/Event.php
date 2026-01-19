@@ -21,4 +21,10 @@ class Event extends Model
     {
         return $this->hasMany(EventRegistration::class);
     }
+
+    public function myRegistration()
+    {
+        return $this->hasOne(EventRegistration::class)
+            ->where('user_id', auth()->id());
+    }
 }

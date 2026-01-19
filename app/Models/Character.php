@@ -15,6 +15,7 @@ class Character extends Model
         'gender',
         'alignment',
         'race_id',
+        'player_notes',
     ];
 
     public function getAlignmentLabelAttribute(): string

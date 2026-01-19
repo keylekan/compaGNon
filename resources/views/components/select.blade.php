@@ -17,8 +17,7 @@
         @disabled($disabled)
         {{ $attributes->merge([
             'class' =>
-                'block w-full rounded-lg border border-sand-200 bg-white px-4 py-2.5 text-sm font-medium text-sand-900 shadow-sm
-                 focus:border-bronze-400 focus:outline-none focus:ring-2 focus:ring-bronze-200
+                'px-4 py-2.5 rounded-xl w-full border border-bronze-100 bg-white focus:outline-none focus:ring-2 focus:ring-bronze-400/50
                  disabled:bg-sand-100 disabled:text-sand-500 disabled:cursor-not-allowed',
         ]) }}
     >

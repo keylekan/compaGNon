@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Logout;
 use App\Http\Controllers\MagicLinkController;
@@ -15,6 +16,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('events', EventController::class);
     Route::post('/events/{event}/invite', [EventController::class, 'invite'])
         ->name('events.invite');
+
+    Route::post('events/{event}/registration/confirm', [EventRegistrationController::class, 'confirm'])
+        ->name('events.registrations.confirm');
 
     // User settings
     Route::get('/account/settings', [AccountSettingsController::class, 'edit'])

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCharacterRequest;
 use App\Models\Character;
+use App\Models\Event;
 use App\Models\PlayableClass;
 use App\Models\PlayableRace;
 use Illuminate\Http\Request;
@@ -70,11 +71,21 @@ class CharacterController extends Controller
      */
     public function show(Character $character)
     {
-        abort_unless($character->user_id === auth()->id(), 403);
+        $user = auth()->user();
+
+        abort_unless($user->admin || $character->user_id === $user->id, 403);
 
         $character->load(['race', 'classes']);
+        $nextPendingEvent = Event::query()
+            ->whereHas('registrations', function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->whereNotIn('invite_status', ['confirmed', 'cancelled']);
+            })
+            ->where('starts_at', '>=', now())
+            ->orderBy('starts_at')
+            ->first();
 
-        return view('characters.show', compact('character'));
+        return view('characters.show', compact('character', 'nextPendingEvent'));
     }
 
     /**
@@ -88,9 +99,17 @@ class CharacterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Character $character)
     {
-        //
+        $request->validate([
+            'player_notes' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $character->update([
+            'player_notes' => filled($request->player_notes) ? trim($request->player_notes) : null,
+        ]);
+
+        return back()->with('success', 'Mise à jour effectuée.');
     }
 
     /**

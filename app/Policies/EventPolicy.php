@@ -13,6 +13,10 @@ class EventPolicy
             return true;
         }
 
+        if (!$event->is_published) {
+            return false;
+        }
+
         return $event->registrations()
             ->where(function ($q) use ($user) {
                 $q->where('user_id', $user->id)
@@ -22,6 +26,11 @@ class EventPolicy
     }
 
     public function create(User $user): bool
+    {
+        return $user->admin;
+    }
+
+    public function update(User $user): bool
     {
         return $user->admin;
     }
