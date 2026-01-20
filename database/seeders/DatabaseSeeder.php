@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $admin = User::firstWhere(['email' => 'admin@lesderniersdesolace.com']);
+        $admin = User::firstWhere(['email' => 'contact@lesderniersdesolace.com']);
         if (! $admin) {
             User::factory()->create([
                 'name' => 'Admin LDS',
-                'email' => 'admin@lesderniersdesolace.com',
+                'email' => 'contact@lesderniersdesolace.com',
                 'admin' => true,
             ]);
         }
