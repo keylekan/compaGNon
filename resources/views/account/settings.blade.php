@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout size="2xl">
     <x-slot:header>
         <h1 class="text-2xl font-semibold">Paramètres du compte</h1>
         <p class="mt-1 text-sand-700">Gérez vos informations personnelles.</p>
@@ -14,7 +14,7 @@
         method="POST"
         action="{{ route('account.settings.update') }}"
         enctype="multipart/form-data"
-        class="max-w-2xl rounded-2xl border border-sand-300 bg-white p-6"
+        class="rounded-2xl border border-sand-300 bg-white p-6"
     >
         @csrf
         @method('PUT')
@@ -84,6 +84,17 @@
                 <p class="mt-1 text-sm text-error">{{ $message }}</p>
                 @enderror
             </div>
+
+            {{-- Date de naissance --}}
+            <x-input
+                id="birthdate"
+                name="birthdate"
+                label="Date de naissance"
+                type="date"
+                max="{{ now()->subYears(10)->format('Y-m-d') }}"
+                :value="old('birthdate', optional(auth()->user()->birthdate)->format('Y-m-d'))"
+                full
+            />
 
             {{-- Actions --}}
             <div class="flex items-center gap-3">

@@ -1,6 +1,6 @@
 @props([
     'title' => config('app.name', 'Les Derniers de Solace'),
-    'logoUrl' => 'https://example.com/logo.png', // à remplacer
+    'logoUrl' => asset('images/logo.png'),
     'preheader' => null,
 ])
 

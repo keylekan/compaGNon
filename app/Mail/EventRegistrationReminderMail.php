@@ -2,7 +2,8 @@
 
 namespace App\Mail;
 
-use App\Models\User;
+use App\Models\Event;
+use App\Models\EventRegistration;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -11,14 +12,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class MagicLink extends Mailable
+class EventRegistrationReminderMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $url, public int $expiresInMinutes, public User | null $user)
+    public function __construct(
+        public readonly Event $event,
+        public readonly EventRegistration $registration,
+        public readonly bool $isReminder = true, // false = invitation initiale
+    )
     {
         //
     }
@@ -28,8 +33,9 @@ class MagicLink extends Mailable
      */
     public function envelope(): Envelope
     {
+        $subjectPrefix = $this->isReminder ? 'Relance' : 'Invitation';
         return new Envelope(
-            subject: 'Votre lien de connexion',
+            subject: "{$subjectPrefix} — Finalisez votre inscription : {$this->event->title}",
         );
     }
 
@@ -39,7 +45,14 @@ class MagicLink extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.magic-link',
+            markdown: 'mail.registration-reminder',
+            with: [
+                'event' => $this->event,
+                'registration' => $this->registration,
+                'isReminder' => $this->isReminder,
+                // Lien à ajuster selon ton flow
+                'ctaUrl' => route('events.show', $this->event),
+            ]
         );
     }
 

@@ -4,8 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\InviteStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -25,6 +27,7 @@ class User extends Authenticatable
         'email',
         'password',
         'admin',
+        'birthdate',
     ];
 
     /**
@@ -47,6 +50,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'birthdate' => 'date',
         ];
     }
 
@@ -57,7 +61,18 @@ class User extends Authenticatable
         );
     }
 
-    public function characters()
+    public function age(): Attribute
+    {
+        return Attribute::get(function () {
+            if (! $this->birthdate) {
+                return null;
+            }
+
+            return Carbon::parse($this->birthdate)->age;
+        });
+    }
+
+    public function characters(): HasMany
     {
         return $this->hasMany(Character::class);
     }

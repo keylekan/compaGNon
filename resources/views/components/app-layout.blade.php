@@ -181,7 +181,7 @@
 </main>
 
 @php
-    $needsProfile = auth()->check() && blank(auth()->user()->name);
+    $needsProfile = auth()->check() && (blank(auth()->user()->name) || blank(auth()->user()->birthdate));
 @endphp
 
 @if($needsProfile)
@@ -193,7 +193,7 @@
         <x-modal title="Complétez votre profil" can-close="false">
             <div class="space-y-4">
                 <p class="text-sm text-sand-700">
-                    Avant de continuer, renseignez votre nom. Vous pouvez aussi ajouter une image de profil.
+                    Avant de continuer, renseignez votre nom et votre date de naissance. Vous pouvez aussi ajouter une image de profil.
                 </p>
 
                 <form
@@ -213,7 +213,7 @@
                         <input
                             id="onboarding_name"
                             name="name"
-                            value="{{ old('name') }}"
+                            value="{{ old('name', auth()->user()->name) }}"
                             required
                             autofocus
                             class="mt-1 block w-full rounded-lg border border-sand-300
@@ -225,6 +225,18 @@
                         <p class="mt-1 text-sm text-error">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    {{-- Date de naissance --}}
+                    <x-input
+                        id="birthdate"
+                        name="birthdate"
+                        label="Date de naissance"
+                        type="date"
+                        max="{{ now()->subYears(10)->format('Y-m-d') }}"
+                        :value="old('birthdate', optional(auth()->user()->birthdate)->format('Y-m-d'))"
+                        required
+                        full
+                    />
 
                     {{-- Avatar (optionnel) --}}
                     <div>

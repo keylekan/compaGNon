@@ -5,12 +5,10 @@
      * - $expiresInMinutes (int|null) : durée de validité (facultatif)
      * - $recipientName (string|null) : nom/alias du destinataire (facultatif)
      */
-    $appName = 'Les Derniers de Solace';
+    $appName = config('app.name', 'Les Derniers de Solace');
 @endphp
 
 <x-mail-layout
-    :title="$appName"
-    logo-url="{{ asset('images/logo.png') }}"
     :preheader="'Votre lien de connexion sécurisé pour ' . $appName"
 >
     <h1 style="margin:0 0 10px 0;font-size:20px;line-height:1.25;color:#4C4944;">

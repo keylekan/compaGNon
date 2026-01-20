@@ -21,10 +21,12 @@ class AccountSettingsController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'avatar' => ['nullable', 'image', 'max:2048'], // 2 Mo max
+            'birthdate' => ['nullable', 'date', 'before:today'],
         ]);
 
         // Mise à jour du nom
         $user->name = $validated['name'];
+        $user->birthdate = $validated['birthdate'];
 
         // Upload avatar (optionnel)
         if ($request->hasFile('avatar')) {

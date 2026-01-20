@@ -88,6 +88,7 @@
         @forelse ($registrations as $reg)
             @php
                 $userName = $reg->user?->name ?? 'Invité';
+                $userAge = $reg->user?->age;
                 $email = $reg->email;
 
                 $char = $reg->character;
@@ -111,6 +112,7 @@
                     <div class="sm:col-span-3 md:col-span-4">
                         <div class="text-sm font-semibold">
                             {{ $userName }}
+                            @if($userAge) <span class="text-xs font-medium text-sand-800">{{$userAge}} ans</span> @endif
                         </div>
                         <div class="text-xs opacity-70">
                             {{ $email }}
@@ -123,11 +125,11 @@
                             <div class="text-sm">
                                 <span class="font-semibold">{{ $charName }}</span>
                                 @if($char->team)
-                                    <span class="font-medium opacity-90">
+                                    <span class="text-xs font-medium opacity-70">
                                         ({{ $char->team->name }})
                                     </span>
                                 @endif
-                                <span class="opacity-70">, {{ $charGender }}, {{ $alignCode }}</span>
+                                <span class="text-xs font-medium opacity-70">, {{ $charGender }}, {{ $alignCode }}</span>
                             </div>
                             <div class="text-sm text-bronze-500">
                                 {{ $race }}, {{ $classes }}
