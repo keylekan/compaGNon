@@ -87,7 +87,7 @@
     <div class="divide-y divide-sand-400 rounded-lg border border-sand-400 overflow-hidden">
         @forelse ($registrations as $reg)
             @php
-                $userName = $reg->user?->name ?? 'Invité';
+                $userName = empty($reg->user?->name) ? 'Invité' : $reg->user?->name;
                 $userAge = $reg->user?->age;
                 $email = $reg->email;
 
@@ -103,7 +103,7 @@
             @endphp
 
             <a
-                href="{{ route('characters.show', $char) }}"
+                @if($char) href="{{ route('characters.show', $char) }}" @endif
                 target="_blank"
                 class="cursor-pointer block p-2 hover:bg-sand-200 transition"
             >

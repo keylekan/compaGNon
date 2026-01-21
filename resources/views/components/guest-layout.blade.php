@@ -13,19 +13,23 @@
 <body class="min-h-screen bg-sand-100 text-sand-900">
 <div class="min-h-screen grid grid-cols-1 md:grid-cols-2">
     {{-- Panneau gauche --}}
-    <aside class="bg-bronze-600 text-bronze-50 flex items-center justify-center p-10">
-        <div class="max-w-sm w-full">
-            <a href="{{ url('/') }}" class="inline-flex items-center gap-3">
-                {{-- Remplace par ton logo --}}
-                <div class="h-12 w-12 rounded bg-white/10 grid place-items-center font-bold">
-                    L
-                </div>
-                <span class="text-xl font-semibold">
-                        {{ config('app.name', 'Mon App') }}
-                    </span>
+    <aside class="bg-bronze-500 text-black flex items-center justify-center p-10">
+        <div class="max-w-md w-full">
+            <a href="{{ url('/') }}" class="flex flex-col items-center gap-3">
+                <img
+                    src="{{ asset('images/logo.png') }}"
+                    alt="Les Derniers de Solace"
+                    class="h-40 w-40"
+                />
+                <span class="text-3xl font-semibold">
+                    CompaGNon
+                </span>
+                <span class="text-lg font-medium">
+                    Les Derniers de Solace
+                </span>
             </a>
 
-            <p class="mt-6 text-white/80">
+            <p class="mt-3">
                 Bienvenue ! Connecte-toi ou crée un compte pour continuer.
             </p>
         </div>
