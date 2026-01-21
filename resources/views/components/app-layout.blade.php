@@ -79,6 +79,16 @@
                     ])>
                     Événements
                 </a>
+
+                <a href="{{ route('admin.index') }}"
+                    @class([
+                        'rounded-lg px-3 py-2 text-sm font-medium transition',
+                        request()->routeIs('admin.*')
+                             ? 'bg-sand-200 text-sand-900'
+                             : 'text-sand-800 hover:bg-sand-100'
+                    ])>
+                    Admin
+                </a>
             </nav>
 
             {{-- User dropdown + mobile menu --}}
@@ -160,6 +170,10 @@
                     <a href="{{ route('events.index') }}"
                        class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sand-100">
                         Événements
+                    </a>
+                    <a href="{{ route('admin.index') }}"
+                       class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sand-100">
+                        Admin
                     </a>
                 </div>
             </div>

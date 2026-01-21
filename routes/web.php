@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountSettingsController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\CharacterTeamController;
 use App\Http\Controllers\EventController;
@@ -37,6 +38,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('account.settings.update');
 
     Route::post('/logout', Logout::class)->name('logout');
+
+    Route::middleware(['admin'])->group(function () {
+        // routes admin
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+        Route::post('/admin', [AdminController::class, 'invite'])->name('admin.invite');
+    });
 });
 
 Route::get('/login', [MagicLinkController::class, 'create'])->name('login')->middleware('guest');
