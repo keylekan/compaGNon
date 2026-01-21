@@ -21,7 +21,7 @@
       'ghost' =>
         'text-sand-700 hover:bg-sand-100',
       'danger' =>
-        'bg-red-600 text-white hover:bg-red-700',
+        'bg-red-600 text-white hover:bg-red-500',
     ];
 
     $sizes = [

@@ -46,6 +46,15 @@
                 <x-button-link href="{{ route('events.index') }}" variant="secondary" size="sm">
                     ← Retour
                 </x-button-link>
+
+                @can('delete', $event)
+                    <x-button-confirm
+                        :action="route('events.destroy', $event)"
+                        modalTitle="Supprimer l’événement"
+                        :title="'Supprimer « ' . $event->title . ' » ?'"
+                        message="Cette action est définitive. Les inscriptions associées seront perdues."
+                    />
+                @endcan
             </div>
         </div>
 

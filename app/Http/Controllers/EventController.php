@@ -145,8 +145,17 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Event $event)
     {
-        //
+        Gate::authorize('delete', $event);
+
+        // Si tu as des relations à détacher (participants, invitations), fais-le ici.
+        // $event->participants()->detach();
+
+        $event->delete();
+
+        return redirect()
+            ->route('events.index')
+            ->with('success', "L’événement a bien été supprimé.");
     }
 }

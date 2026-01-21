@@ -39,4 +39,9 @@ class EventPolicy
     {
         return $user->admin;
     }
+
+    public function delete(User $user, Event $event): bool
+    {
+        return $user->admin;
+    }
 }
