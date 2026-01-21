@@ -58,11 +58,7 @@
             </div>
         </div>
 
-        @if (session('success'))
-            <div class="rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm text-teal-900">
-                {{ session('success') }}
-            </div>
-        @endif
+        <x-info-panel :message="session('success')" />
 
         {{-- Bloc "Mon personnage" : visible seulement si participation confirmée --}}
         @if($inviteValue === 'confirmed' && $registration?->character)

@@ -4,11 +4,7 @@
         <p class="mt-1 text-sand-700">Gérez vos informations personnelles.</p>
     </x-slot:header>
 
-    @if(session('status'))
-        <div class="mb-6 rounded-xl border border-teal-300 bg-teal-50 p-4 text-teal-600">
-            {{ session('status') }}
-        </div>
-    @endif
+    <x-info-panel class="mb-6" :message="session('status')" />
 
     <form
         method="POST"
