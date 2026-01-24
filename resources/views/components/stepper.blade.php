@@ -1,9 +1,9 @@
 @props([
   'step' => 1,
   'steps' => [
-    1 => 'Identité',
-    2 => 'Race',
-    3 => 'Classe',
+    1 => 'Race',
+    2 => 'Classe',
+    3 => 'Identité',
     4 => 'Résumé',
   ],
 ])

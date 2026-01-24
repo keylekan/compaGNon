@@ -34,60 +34,14 @@
             <form method="POST" action="{{ route('characters.store') }}" class="mt-6">
                 @csrf
 
-                {{-- STEP 1 : Nom --}}
+                {{-- STEP 1 : Race --}}
                 <div x-show="step === 1" x-transition>
-                    <x-panel>
-                        <h2 class="text-lg font-semibold text-sand-900">Identité du personnage</h2>
-
-                        <div class="mt-4">
-                            <label class="block text-sm font-semibold text-sand-800">Nom</label>
-                            <x-input class="mt-1" name="name" x-model.trim="name" required full />
-                        </div>
-
-                        <div class="mt-5">
-                            <div class="text-sm font-semibold text-sand-800">Genre</div>
-                            <div class="mt-2 flex gap-2">
-                                <x-pill-radio name="gender" value="H" model="gender">Homme</x-pill-radio>
-                                <x-pill-radio name="gender" value="F" model="gender">Femme</x-pill-radio>
-                            </div>
-                        </div>
-
-                        <div class="mt-6">
-                            <div class="flex items-baseline justify-between">
-                                <div class="text-sm font-semibold text-sand-800">Alignement</div>
-                                <div class="text-xs text-sand-500">ex : Paladin = LB • Chevalier = Loyal</div>
-                            </div>
-
-                            <div class="mt-2">
-                                <x-alignment-grid name="alignment" model="alignment" />
-                            </div>
-                        </div>
-
-                        <div class="mt-6 flex justify-end">
-                            <button type="button"
-                                    class="rounded-xl bg-bronze-600 px-4 py-2.5 font-semibold text-white hover:bg-bronze-700 disabled:opacity-50"
-                                    :disabled="!canGoNextFromIdentity()"
-                                    @click="go(2)">
-                                Continuer
-                            </button>
-                        </div>
-                    </x-panel>
-                </div>
-
-                {{-- STEP 2 : Race --}}
-                <div x-show="step === 2" x-transition>
                     <x-panel>
                         <div class="flex items-start justify-between gap-4">
                             <div>
                                 <h2 class="text-lg font-semibold text-sand-900">Choisir une race</h2>
                                 <p class="mt-1 text-sm text-sand-600">Clique pour sélectionner. “Détails” pour lire la description.</p>
                             </div>
-                            <x-button
-                                variant="secondary"
-                                @click="go(1)"
-                            >
-                                ← Retour
-                            </x-button>
                         </div>
 
                         <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -120,7 +74,7 @@
                                     class="inline-flex items-center justify-center rounded-xl bg-bronze-600 px-4 py-2.5 font-semibold text-white
                      hover:bg-bronze-700 disabled:opacity-50"
                                     :disabled="!selectedRaceId"
-                                    @click="go(3)"
+                                    @click="go(2)"
                             >
                                 Continuer
                             </button>
@@ -128,8 +82,8 @@
                     </x-panel>
                 </div>
 
-                {{-- STEP 3 : Classe --}}
-                <div x-show="step === 3" x-transition>
+                {{-- STEP 2 : Classe --}}
+                <div x-show="step === 2" x-transition>
                     <x-panel>
                         <div class="flex items-start justify-between gap-4">
                             <div>
@@ -140,7 +94,7 @@
                             </div>
                             <x-button
                                 variant="secondary"
-                                @click="go(2)"
+                                @click="go(1)"
                             >
                                 ← Retour
                             </x-button>
@@ -172,7 +126,6 @@
                                             :image="$klass->image_path ? asset($klass->image_path) : null"
                                             :requirements="is_array($allowed) && count($allowed) ? 'Alignements : ' . implode(', ', $allowed) : null"
                                             model="selectedClassId"
-                                            disabled="!isClassAllowed({{ Js::from($allowed) }})"
                                         >
                                             <x-button
                                                 variant="secondary"
@@ -192,6 +145,59 @@
                                     class="inline-flex items-center justify-center rounded-xl bg-bronze-600 px-4 py-2.5 font-semibold text-white
            hover:bg-bronze-700 disabled:opacity-50"
                                     :disabled="!selectedClassId"
+                                    @click="go(3)">
+                                Continuer
+                            </button>
+                        </div>
+                    </x-panel>
+                </div>
+
+                {{-- STEP 3 : Nom --}}
+                <div x-show="step === 3" x-transition>
+                    <x-panel>
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <h2 class="text-lg font-semibold text-sand-900">Identité du personnage</h2>
+                                <p class="mt-1 text-sm text-sand-600">
+                                    Certaines classes imposent un alignement (ex : Paladin = LB, Chevalier = Loyal).
+                                </p>
+                            </div>
+                            <x-button
+                                variant="secondary"
+                                @click="go(2)"
+                            >
+                                ← Retour
+                            </x-button>
+                        </div>
+
+                        <div class="mt-4">
+                            <label class="block text-sm font-semibold text-sand-800">Nom</label>
+                            <x-input class="mt-1" name="name" x-model.trim="name" required full />
+                        </div>
+
+                        <div class="mt-5">
+                            <div class="text-sm font-semibold text-sand-800">Genre</div>
+                            <div class="mt-2 flex gap-2">
+                                <x-pill-radio name="gender" value="H" model="gender">Homme</x-pill-radio>
+                                <x-pill-radio name="gender" value="F" model="gender">Femme</x-pill-radio>
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <div class="flex items-baseline justify-between">
+                                <div class="text-sm font-semibold text-sand-800">Alignement</div>
+                                <div class="text-xs text-sand-700">ex : Paladin = LB • Chevalier = Loyal</div>
+                            </div>
+
+                            <div class="mt-2">
+                                <x-alignment-grid name="alignment" model="alignment" allowed="selectedClass?.allowed_alignments" />
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex justify-end">
+                            <button type="button"
+                                    class="rounded-xl bg-bronze-600 px-4 py-2.5 font-semibold text-white hover:bg-bronze-700 disabled:opacity-50"
+                                    :disabled="!canGoNextFromIdentity()"
                                     @click="go(4)">
                                 Continuer
                             </button>
@@ -217,16 +223,6 @@
 
                         <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="rounded-xl border border-sand-200 bg-white p-4">
-                                <div class="text-xs font-semibold text-sand-500">Identité</div>
-                                <div class="mt-1 font-semibold text-sand-900" x-text="name || '—'"></div>
-                                <div class="mt-1 text-sm font-semibold text-sand-800" x-text="genderLabel"></div>
-                                <div class="mt-1 text-sm font-semibold text-sand-800" x-text="alignmentLabel"></div>
-                                <button type="button" class="mt-3 text-sm font-semibold text-bronze-700 hover:underline" @click="go(1)">
-                                    Modifier
-                                </button>
-                            </div>
-
-                            <div class="rounded-xl border border-sand-200 bg-white p-4">
                                 <div class="text-xs font-semibold text-sand-500">Race</div>
                                 <div class="mt-2 flex items-center gap-3" x-show="selectedRace">
                                     <img :src="selectedRace?.image_path ? ('/' + selectedRace.image_path) : ''"
@@ -234,7 +230,7 @@
                                     <div class="font-semibold text-sand-900" x-text="selectedRace?.title"></div>
                                 </div>
                                 <div class="mt-3 flex gap-3">
-                                    <button type="button" class="text-sm font-semibold text-bronze-700 hover:underline" @click="go(2)">
+                                    <button type="button" class="text-sm font-semibold text-bronze-700 hover:underline" @click="go(1)">
                                         Modifier
                                     </button>
                                     <button type="button" class="text-sm font-semibold text-sand-700 hover:underline"
@@ -252,7 +248,7 @@
                                     <div class="font-semibold text-sand-900" x-text="selectedClass?.title"></div>
                                 </div>
                                 <div class="mt-3 flex gap-3">
-                                    <button type="button" class="text-sm font-semibold text-bronze-700 hover:underline" @click="go(3)">
+                                    <button type="button" class="text-sm font-semibold text-bronze-700 hover:underline" @click="go(2)">
                                         Modifier
                                     </button>
                                     <button type="button" class="text-sm font-semibold text-sand-700 hover:underline"
@@ -260,6 +256,16 @@
                                         Détails
                                     </button>
                                 </div>
+                            </div>
+
+                            <div class="rounded-xl border border-sand-200 bg-white p-4">
+                                <div class="text-xs font-semibold text-sand-500">Identité</div>
+                                <div class="mt-1 font-semibold text-sand-900" x-text="name || '—'"></div>
+                                <div class="mt-1 text-sm font-semibold text-sand-800" x-text="genderLabel"></div>
+                                <div class="mt-1 text-sm font-semibold text-sand-800" x-text="alignmentLabel"></div>
+                                <button type="button" class="mt-3 text-sm font-semibold text-bronze-700 hover:underline" @click="go(3)">
+                                    Modifier
+                                </button>
                             </div>
                         </div>
 
@@ -423,16 +429,16 @@
                 },
 
                 init() {
-                    this.$watch('alignment', () => {
+                    this.$watch('selectedClass', () => {
                         // si rien sélectionné, ok
-                        if (!this.selectedClassId) return
+                        if (!this.selectedClassId || !this.alignment) return
 
                         const selectedClass = this.selectedClass
 
                         if (!selectedClass.allowed_alignments) return;
 
                         if (!selectedClass.allowed_alignments.includes(this.alignment)) {
-                            this.selectedClassId = null;
+                            this.alignment = null;
                         }
                     })
                 },
