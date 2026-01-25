@@ -297,11 +297,11 @@
                 },
                 get allowedAlignments() {
                     const classAlignments = this.selectedClass?.allowed_alignments;
-                    if (!classAlignments) return null;
-
                     const godAlignments = this.selectedGod && (
                         this.selectedClass.slug === 'clerc' ? this.selectedGod.allowed_cleric_alignments : this.selectedGod.allowed_believer_alignments
                     )
+
+                    if (!classAlignments) return godAlignments;
                     if (!godAlignments) return classAlignments;
 
                     return classAlignments.filter((a) => godAlignments.includes(a));
