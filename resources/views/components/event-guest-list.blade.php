@@ -37,7 +37,7 @@
                 class="w-full"
                 name="q"
                 :value="$filters['q'] ?? ''"
-                placeholder="Nom du joueur, du perso, ou email…"
+                placeholder="Nom du joueur, du perso, de l'équipe…"
             />
         </div>
 
@@ -94,6 +94,7 @@
                 $char = $reg->character;
                 $charName = $char?->name ?? '—';
                 $charGender = $char ? $genderLabel($char->gender) : '—';
+                $charGod = $char?->god ? $char->god->name : '—';
                 $alignCode = $char?->alignment ?? '—';
 
                 $race = $char?->race?->title;
@@ -107,9 +108,9 @@
                 target="_blank"
                 class="cursor-pointer block p-2 hover:bg-sand-200 transition"
             >
-                <div class="grid gap-2 sm:grid-cols-7 md:grid-cols-16 md:items-center">
+                <div class="grid gap-2 sm:grid-cols-7 md:grid-cols-42 md:items-center">
                     {{-- Joueur --}}
-                    <div class="sm:col-span-3 md:col-span-4">
+                    <div class="sm:col-span-3 md:col-span-10">
                         <div class="text-sm font-semibold">
                             {{ $userName }}
                             @if($userAge) <span class="text-xs font-medium text-sand-800">{{$userAge}} ans</span> @endif
@@ -120,16 +121,14 @@
                     </div>
 
                     {{-- Perso --}}
-                    <div class="sm:col-span-4 md:col-span-6">
+                    <div class="sm:col-span-4 md:col-span-19">
                         @if($char)
                             <div class="text-sm">
-                                <span class="font-semibold">{{ $charName }}</span>
-                                @if($char->team)
-                                    <span class="text-xs font-medium opacity-70">
-                                        ({{ $char->team->name }})
-                                    </span>
-                                @endif
-                                <span class="text-xs font-medium opacity-70">, {{ $charGender }}, {{ $alignCode }}</span>
+                                <span class="font-semibold">{{ $charName }}</span><!--
+                             -->@if($char->team)<!--
+                                 --><span class="text-xs font-medium text-sand-800"> ({{ $char->team->name }})</span><!--
+                             -->@endif<!--
+                             --><span class="text-xs font-medium text-sand-800">, {{ $charGod }}, {{ $charGender }}, {{ $alignCode }}</span>
                             </div>
                             <div class="text-sm text-bronze-500">
                                 {{ $race }}, {{ $classes }}
@@ -142,13 +141,13 @@
                     </div>
 
                     {{-- Statut invitation --}}
-                    <div class="sm:col-span-3 md:col-span-4">
+                    <div class="sm:col-span-3 md:col-span-9">
                         <div class="text-xs opacity-70 mb-1">Invitation</div>
                         <x-badge-invite :status="$reg->invite_status" />
                     </div>
 
                     {{-- Statut paiement --}}
-                    <div class="sm:col-span-3 md:col-span-2">
+                    <div class="sm:col-span-3 md:col-span-4">
                         <div class="text-xs opacity-70 mb-1">Paiement</div>
                         <x-badge-payment :status="$reg->payment_status"/>
                     </div>

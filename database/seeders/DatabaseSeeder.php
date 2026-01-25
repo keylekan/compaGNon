@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PlayableRaceSeeder::class,
             PlayableClassSeeder::class,
+            GodSeeder::class,
         ]);
     }
 }

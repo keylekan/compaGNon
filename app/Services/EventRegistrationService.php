@@ -23,6 +23,7 @@ class EventRegistrationService
             ->with([
                 'user',
                 'character',
+                'character.team',
                 'character.race',
                 'character.classes',
             ])
@@ -30,6 +31,7 @@ class EventRegistrationService
                 $query->where(function ($q) use ($search) {
                     $q->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$search}%"))
                         ->orWhereHas('character', fn ($c) => $c->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('character.team', fn ($t) => $t->where('name', 'like', "%{$search}%"))
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             })

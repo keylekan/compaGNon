@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCharacterRequest;
 use App\Models\Character;
 use App\Models\Event;
+use App\Models\God;
 use App\Models\PlayableClass;
 use App\Models\PlayableRace;
 use Illuminate\Http\Request;
@@ -33,6 +34,7 @@ class CharacterController extends Controller
         return view('characters.create', [
             'races' => PlayableRace::orderBy('title')->get(),
             'classesByCategory' => PlayableClass::orderBy('title')->get()->groupBy('category'),
+            'gods' => God::orderBy('name')->get(),
         ]);
     }
 
@@ -53,6 +55,7 @@ class CharacterController extends Controller
                 'gender'    => $data['gender'],
                 'alignment' => $data['alignment'],
                 'race_id'   => $data['race_id'],
+                'god_id'   => $data['god_id'],
             ]);
 
             // 2) Première classe (niveau 1)

@@ -31,6 +31,7 @@ class StoreCharacterRequest extends FormRequest
             ],
 
             'race_id' => ['required', 'integer', 'exists:playable_races,id'],
+            'god_id' => ['required', 'integer', 'exists:gods,id'],
             'playable_class_id' => ['required', 'integer', 'exists:playable_classes,id'],
         ];
     }

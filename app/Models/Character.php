@@ -17,6 +17,7 @@ class Character extends Model
         'gender',
         'alignment',
         'race_id',
+        'god_id',
         'player_notes',
     ];
 
@@ -56,6 +57,11 @@ class Character extends Model
     public function race(): BelongsTo
     {
         return $this->belongsTo(PlayableRace::class, 'race_id');
+    }
+
+    public function god(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\God::class);
     }
 
     public function team(): BelongsTo

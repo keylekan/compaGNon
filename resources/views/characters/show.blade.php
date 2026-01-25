@@ -82,7 +82,7 @@
                 {{-- Race visuelle --}}
                 <div class="rounded-xl border border-sand-200 bg-sand-50 px-6 py-4">
                     <div class="flex h-full items-center gap-4">
-                        <div class="h-20 aspect-square overflow-hidden rounded-lg border border-sand-200 bg-white">
+                        <div class="shrink-0 h-20 aspect-square overflow-hidden rounded-lg border border-sand-200 bg-white">
                             @if(!empty($character->race->image_path))
                                 <img
                                     src="{{ asset($character->race->image_path) }}"
@@ -141,22 +141,33 @@
                     </ul>
 
                     <dl class="flex gap-3 text-sm">
-                        <div class="flex gap-x-2 gap-y-1 flex-col sm:flex-row rounded-lg border border-sand-200 bg-white px-4 py-2">
-                            <dt class="text-sand-600">Genre</dt>
+                        <div class="flex gap-2.5 rounded-lg border border-sand-200 bg-white px-3 py-1">
+                            <img src="{{$character->god ? asset($character->god->icon_path) : ''}}"
+                                 class="h-9 w-9 rounded-lg object-cover border border-sand-200" alt="">
+                            <div class="flex gap-0.5 flex-col">
+                                <dt class="text-xs text-sand-700">Dieu</dt>
+                                <dd class="font-semibold text-bronze-900">
+                                    {{ $character->god ? $character->god->name : '—' }}
+                                </dd>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-0.5 flex-col rounded-lg border border-sand-200 bg-white px-3 py-1">
+                            <dt class="text-xs text-sand-700">Genre</dt>
                             <dd class="font-semibold text-bronze-900">
                                 {{ $character->gender === 'H' ? 'Homme' : 'Femme' }}
                             </dd>
                         </div>
 
-                        <div class="flex gap-x-2 gap-y-1 flex-col sm:flex-row rounded-lg border border-sand-200 bg-white px-4 py-2">
-                            <dt class="text-sand-600">Alignement</dt>
+                        <div class="flex gap-0.5 flex-col rounded-lg border border-sand-200 bg-white px-3 py-1">
+                            <dt class="text-xs text-sand-700">Alignement</dt>
                             <dd class="font-semibold text-bronze-900">
                                 {{ $character->alignment_label }}
                             </dd>
                         </div>
 
-                        <div class="flex gap-x-2 gap-y-1 flex-col sm:flex-row rounded-lg border border-sand-200 bg-white px-4 py-2">
-                            <dt class="text-sand-600">PV</dt>
+                        <div class="flex gap-0.5 flex-col rounded-lg border border-sand-200 bg-white px-3 py-1">
+                            <dt class="text-xs text-sand-700">PV</dt>
                             <dd class="font-semibold text-bronze-900">
                                 À venir
                             </dd>

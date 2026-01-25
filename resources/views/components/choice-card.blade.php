@@ -9,7 +9,7 @@
 ])
 
 <label
-    class="block"
+    class="flex flex-col items-center"
     @if($disabled) aria-disabled="true" @endif
 >
     <input
@@ -22,14 +22,14 @@
     >
 
     <div
-        class="group w-full text-left rounded-xl border bg-sand-50/70 overflow-hidden transition
+        class="group w-full max-w-xs text-left rounded-xl border bg-sand-50/70 overflow-hidden transition
            hover:-translate-y-0.5 hover:shadow-sm focus-within:ring-2 focus-within:ring-bronze-400/50"
         :class="[
             {{ $model }} == {{ $value }} ? 'border-gold-500 ring-1 ring-gold-500/30' : 'border-sand-200',
             {{ $disabled }} ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
         ]"
     >
-        <div class="aspect-[4/3] bg-sand-100 overflow-hidden">
+        <div class="aspect-4/3 bg-sand-100 overflow-hidden">
             @if($image)
                 <img src="{{ $image }}" alt="" class="h-full w-full object-cover transition group-hover:scale-[1.02]">
             @else

@@ -3,8 +3,9 @@
   'steps' => [
     1 => 'Race',
     2 => 'Classe',
-    3 => 'Identité',
-    4 => 'Résumé',
+    3 => 'Dieu',
+    4 => 'Identité',
+    5 => 'Résumé',
   ],
 ])
 
