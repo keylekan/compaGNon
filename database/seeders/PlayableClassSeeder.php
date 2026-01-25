@@ -50,7 +50,7 @@ MD
                 'description' => <<<MD
 Fiers et courageux, les Chevaliers consacrent leur vie à l’idéalisme de la chevalerie : honneur, droiture, loyauté, bravoure.
 
-**Alignement requis :** **Loyal** (**LB**, **LN** ou **LM**)
+**Alignement requis :** **Loyal** (**Loyal Bon**, **Loyal Neutre** ou **Loyal Mauvais**)
 
 | Niveau 1 | Informations |
 |---------|------------------------------|
@@ -106,9 +106,11 @@ MD
                 'title' => 'Druide',
                 'category' => 'Lettrés',
                 'image_path' => 'images/classes/druide.webp',
-                'allowed_alignments' => null,
+                'allowed_alignments' => ['LN', 'NN', 'CN', 'NB', 'NM'],
                 'description' => <<<MD
 Sages vivant en harmonie avec la nature, ils cherchent à la protéger.
+
+**Alignement requis :** **Composante neutre** (**Loyal Neutre**, **Chaotique Neutre**, **Neutre Bon**, **Neutre Mauvais** ou **Neutre**)
 
 | Niveau 1 | Équipement |
 |---------|------------|
