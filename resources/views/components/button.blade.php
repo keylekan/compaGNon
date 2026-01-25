@@ -27,13 +27,13 @@
     $sizes = [
       'sm' => 'px-2 py-1 text-xs',
       'md' => 'px-4 py-2 text-sm',
-      'lg' => 'px-8 py-4 text-md',
+      'lg' => 'px-6 py-3 text-md',
     ];
 @endphp
 
 <button
     type="{{ $type }}"
-    @disabled($disabled)
+    @if($disabled) :disabled="{{$disabled}}" @endif
     {{ $attributes->class([$base, $variants[$variant] ?? $variants['primary'], $sizes[$size] ?? $sizes['md']]) }}
 >
     {{ $slot }}

@@ -42,8 +42,9 @@
                     subtitle="Clique pour sélectionner. “Détails” pour lire la description."
                     disabled="!selectedRaceId"
                 >
-                    <x-character.race-choice :races="$races" selected-race-id="selectedRaceId" />
+                    <x-character.race-choice :races="$races" selected-race-id="selectedRaceId" open-item="openRace" />
                 </x-stepper-step>
+                <x-character.race-modal selected-race-id="selectedRaceId" open-item="openRace" />
 
                 {{-- STEP 2 : Classe --}}
                 <x-stepper-step
@@ -52,18 +53,20 @@
                     subtitle="Certaines classes imposent un alignement (ex : Paladin = LB, Chevalier = Loyal)."
                     disabled="!selectedClassId"
                 >
-                    <x-character.class-choice :classes-by-category="$classesByCategory" selected-class-id="selectedClassId" />
+                    <x-character.class-choice :classes-by-category="$classesByCategory" selected-class-id="selectedClassId" open-item="openClass" />
                 </x-stepper-step>
+                <x-character.class-modal selected-class-id="selectedClassId" open-item="openClass" />
 
                 {{-- STEP 3 : Dieu --}}
                 <x-stepper-step
                     pos="3"
                     title="Choisir un dieu"
                     subtitle="Dans Greyhawk, presque tout le monde est croyant. Certains sont au service de leur dieu, d'autres sont de simples fidèles."
-                    disabled="!selectedClassId"
+                    disabled="!selectedGodId"
                 >
-                    <x-character.god-choice :gods="$gods" selected-god-id="selectedGodId" is-allowed="isGodAllowed" />
+                    <x-character.god-choice :gods="$gods" selected-god-id="selectedGodId" is-allowed="isGodAllowed" open-item="openGod" />
                 </x-stepper-step>
+                <x-character.god-modal selected-god-id="selectedGodId" is-allowed="isGodAllowed" open-item="openGod" />
 
                 {{-- STEP 4 : Nom --}}
                 <x-stepper-step
@@ -126,7 +129,7 @@
                                         Modifier
                                     </button>
                                     <button type="button" class="text-sm font-semibold text-sand-700 hover:underline"
-                                            @click="openDetails('race', selectedRace)" x-show="selectedRace">
+                                            @click="openRace = selectedRace" x-show="selectedRace">
                                         Détails
                                     </button>
                                 </div>
@@ -144,7 +147,7 @@
                                         Modifier
                                     </button>
                                     <button type="button" class="text-sm font-semibold text-sand-700 hover:underline"
-                                            @click="openDetails('class', selectedClass)" x-show="selectedClass">
+                                            @click="openClass = selectedClass" x-show="selectedClass">
                                         Détails
                                     </button>
                                 </div>
@@ -162,7 +165,7 @@
                                         Modifier
                                     </button>
                                     <button type="button" class="text-sm font-semibold text-sand-700 hover:underline"
-                                            @click="openDetails('class', selectedGod)" x-show="selectedClass">
+                                            @click="openGod = selectedGod" x-show="selectedGod">
                                         Détails
                                     </button>
                                 </div>
@@ -259,9 +262,9 @@
                 selectedClassId: null,
                 selectedGodId: null,
 
-                detailsOpen: false,
-                detailsType: null, // 'race' | 'class'
-                detailsItem: null,
+                openRace: null,
+                openClass: null,
+                openGod: null,
 
                 get genderLabel() {
                     if (!this.gender) return null;
@@ -326,18 +329,6 @@
                 isClassAllowed(allowed) {
                     if (!allowed || allowed.length === 0) return true
                     return allowed.includes(this.alignment)
-                },
-
-                openDetails(type, item) {
-                    this.detailsType = type
-                    this.detailsItem = item
-                    this.detailsOpen = true
-                },
-                chooseFromDetails() {
-                    if (!this.detailsItem) return
-                    if (this.detailsType === 'race') this.selectedRaceId = String(this.detailsItem.id)
-                    if (this.detailsType === 'class') this.selectedClassId = String(this.detailsItem.id)
-                    this.detailsOpen = false
                 },
 
                 init() {
