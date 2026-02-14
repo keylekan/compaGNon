@@ -11,16 +11,17 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 
     /* Neutres (fond "parchemin") */
-    --color-sand-50:  #FCFBF9;
-    --color-sand-100: #F9F7F3;
-    --color-sand-200: #F6F1EA;
-    --color-sand-300: #F2EBE2;
-    --color-sand-400: #EFE7DC;
-    --color-sand-500: #ECE3D6;
-    --color-sand-600: #D0C8BC;
-    --color-sand-700: #AAA39A;
-    --color-sand-800: #7B766F;
-    --color-sand-900: #4C4944;
+    --color-sand-50: #f9f6f2;
+    --color-sand-100: #f1eae1;
+    --color-sand-200: #e6d8c5;
+    --color-sand-300: #d7c4a8;
+    --color-sand-400: #b7a68e;
+    --color-sand-500: #958773;
+    --color-sand-600: #776c5b;
+    --color-sand-700: #574f42;
+    --color-sand-800: #3c362d;
+    --color-sand-900: #211d17;
+    --color-sand-950: #16130f;
 
     /* Primary (bronze du logo) */
     --color-bronze-50:  #F5EFEA;

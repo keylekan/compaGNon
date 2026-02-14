@@ -30,7 +30,7 @@
 
 <body class="min-h-screen bg-sand-50 text-sand-900 flex flex-col">
 @livewireScripts
-<header class="border-b border-sand-300 bg-white">
+<header class="border-b border-sand-200 bg-white">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <div class="relative flex h-16 items-center justify-between gap-3">
             {{-- Brand --}}
@@ -123,7 +123,7 @@
                     <img
                         src="{{ Auth::user()->avatar_path }}"
                         alt="Avatar"
-                        class="h-9 w-9 rounded-xl object-cover border border-sand-300"
+                        class="h-9 w-9 rounded-xl object-cover border border-sand-200"
                     >
 
                     <svg class="hidden sm:block h-4 w-4 text-sand-700" viewBox="0 0 20 20" fill="currentColor">
@@ -136,7 +136,7 @@
                     x-cloak
                     x-show="openUser"
                     @click.outside="openUser = false"
-                    class="absolute right-0 top-16 z-50 w-56 rounded-xl border border-sand-300 bg-white p-1 shadow-lg"
+                    class="absolute right-0 top-16 z-50 w-56 rounded-xl border border-sand-200 bg-white p-1 shadow-lg"
                 >
                     <a href="{{ route('account.settings') }}"
                        class="block rounded-lg px-3 py-2 text-sm text-sand-800 hover:bg-sand-100">
@@ -159,7 +159,7 @@
                     x-cloak
                     x-show="openMobile"
                     @click.outside="openMobile = false"
-                    class="absolute left-4 right-4 top-16 z-40 rounded-xl border border-sand-300 bg-white p-2 shadow-lg md:hidden"
+                    class="absolute left-4 right-4 top-16 z-40 rounded-xl border border-sand-200 bg-white p-2 shadow-lg md:hidden"
                 >
                     <a href="{{ route('home') }}"
                        class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sand-100">
@@ -187,7 +187,7 @@
 
 {{-- Optional page header --}}
 @isset($header)
-    <div class="border-b border-sand-300 bg-white">
+    <div class="border-b border-sand-200 bg-white">
         <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
             {{ $header }}
         </div>
@@ -234,7 +234,7 @@
                             value="{{ old('name', auth()->user()->name) }}"
                             required
                             autofocus
-                            class="mt-1 block w-full rounded-lg border border-sand-300
+                            class="mt-1 block w-full rounded-lg border border-sand-200
                                    bg-sand-50 px-3 py-2 text-sand-900
                                    focus:border-bronze-500 focus:outline-none
                                    focus:ring-4 focus:ring-teal-200"
@@ -266,7 +266,7 @@
                             <img
                                 src="{{ auth()->user()->avatar_path }}"
                                 alt="Avatar"
-                                class="h-14 w-14 rounded-xl object-cover border border-sand-300"
+                                class="h-14 w-14 rounded-xl object-cover border border-sand-200"
                             >
 
                             <input
@@ -296,7 +296,7 @@
     </div>
 @endif
 
-<footer class="border-t border-sand-300 bg-white">
+<footer class="border-t border-sand-200 bg-white">
     <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-sand-700 sm:px-6">
         © {{ date('Y') }} Les Derniers de Solace
     </div>
