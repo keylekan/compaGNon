@@ -80,6 +80,7 @@
                     Événements
                 </a>
 
+                @if(Auth::user()->admin)
                 <a href="{{ route('admin.index') }}"
                     @class([
                         'rounded-lg px-3 py-2 text-sm font-medium transition',
@@ -89,6 +90,7 @@
                     ])>
                     Admin
                 </a>
+                @endif
             </nav>
 
             {{-- User dropdown + mobile menu --}}
@@ -171,10 +173,12 @@
                        class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sand-100">
                         Événements
                     </a>
+                    @if(Auth::user()->admin)
                     <a href="{{ route('admin.index') }}"
                        class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-sand-100">
                         Admin
                     </a>
+                    @endif
                 </div>
             </div>
         </div>
