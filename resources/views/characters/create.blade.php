@@ -109,7 +109,7 @@
                                 <p class="mt-1 text-sm text-sand-600">Vérifie avant de créer le personnage.</p>
                             </div>
                             <x-button
-                                variant="secondary"
+                                variant="panel"
                                 @click="go(4)"
                             >
                                 ← Retour

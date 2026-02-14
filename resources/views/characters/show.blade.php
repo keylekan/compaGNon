@@ -16,9 +16,11 @@
             </div>
 
             <div class="flex gap-2">
-                <x-button-link size="sm" href="{{ route('characters.edit', $character) }}" disabled>
+                <!--
+                <x-button-link size="sm" href="{{ route('characters.edit', $character) }}">
                     Modifier
                 </x-button-link>
+                -->
 
                 <x-button-link variant="secondary" size="sm" href="{{ route('characters.index') }}">
                     ← Retour
@@ -74,7 +76,7 @@
             </div>
         @endif
 
-        <x-panel-character-team :character="$character" :canEdit="$isOwner" />
+        <x-character.team-panel :character="$character" :canEdit="$isOwner" />
 
         {{-- Panel unique : identité + race + classes --}}
         <x-panel main>

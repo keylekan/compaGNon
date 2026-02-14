@@ -18,7 +18,7 @@
             </div>
             @if($pos > 1)
             <x-button
-                variant="secondary"
+                variant="panel"
                 @click="go({{$pos - 1}})"
             >
                 ← Retour

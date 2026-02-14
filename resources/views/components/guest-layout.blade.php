@@ -13,7 +13,7 @@
 <body class="min-h-screen bg-sand-100 text-sand-900">
 <div class="min-h-screen grid grid-cols-1 md:grid-cols-2">
     {{-- Panneau gauche --}}
-    <aside class="bg-bronze-500 text-black flex items-center justify-center p-10">
+    <aside class="bg-bronze-400 text-black flex items-center justify-center p-10">
         <div class="max-w-md w-full">
             <a href="{{ url('/') }}" class="flex flex-col items-center gap-3">
                 <img

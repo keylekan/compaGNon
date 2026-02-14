@@ -91,7 +91,7 @@
                 @endphp
 
                 <div class="p-2">
-                    <div class="text-sm font-semibold">
+                    <div class="text-sm font-semibold {{empty($admin->name) ? 'opacity-70' : ''}}">
                         {{ $userName }}
                     </div>
                     <div class="text-xs opacity-70">

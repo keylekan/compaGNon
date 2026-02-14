@@ -33,9 +33,9 @@ class EventRegistrationReminderMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        $subjectPrefix = $this->isReminder ? 'Relance' : 'Invitation';
+        $subjectMessage = $this->isReminder ? 'N\'oubliez pas de finaliser votre inscription' : 'Finalisez votre inscription';
         return new Envelope(
-            subject: "{$subjectPrefix} — Finalisez votre inscription : {$this->event->title}",
+            subject: "{$this->event->type->label()} {$this->event->title} : {$subjectMessage}",
         );
     }
 
