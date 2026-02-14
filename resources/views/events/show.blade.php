@@ -261,8 +261,8 @@
                         <label class="block text-sm font-medium text-sand-900" for="emails">
                             Emails
                         </label>
-                        <p class="mt-1 text-xs text-sand-600">
-                            Un par ligne, ou séparés par virgule / point-virgule / espace.
+                        <p class="mt-1 text-xs text-sand-700">
+                            Un par ligne, ou séparés par virgule / point-virgule / espace. Les mails d'invitation partent toutes les 30 minutes entre 10h et 20h.
                         </p>
 
                         <textarea

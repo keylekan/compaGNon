@@ -9,5 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('mail:registration-reminders')
-    ->dailyAt('18:30')
+    ->everyThirtyMinutes()
+    ->between('10:00', '20:00')
     ->timezone('Europe/Paris');
