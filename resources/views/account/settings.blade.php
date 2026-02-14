@@ -54,7 +54,7 @@
                     value="{{ $user->email }}"
                     disabled
                     class="mt-1 block w-full rounded-lg border border-sand-300
-                           bg-sand-100 px-3 py-2 text-sand-700"
+                           bg-sand-50 px-3 py-2 text-sand-600 opacity-90"
                 >
                 <p class="mt-1 text-xs text-sand-600">
                     L’adresse email ne peut pas être modifiée.
