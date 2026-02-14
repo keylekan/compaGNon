@@ -44,17 +44,24 @@
                     @endif
                 </div>
 
-                <div class="text-sm text-sand-600 font-medium font-mono">
+                <div class="text-sm text-sand-700 font-medium">
                     <button
                         type="button"
-                        class="text-sand-700 hover:underline cursor-pointer"
+                        class="hover:underline cursor-pointer font-mono"
                         @click="copy('{{ $character->team->slug }}')"
-                        title="Cliquer pour copier"
                     >
                         {{ '@' . $character->team->slug }}
                     </button>
 
-                    <span x-show="copied" x-cloak class="ml-2 text-teal font-medium">
+                    <span x-show="!copied" class="ml-1 text-xs">
+                        @if($canEdit)
+                            Ceci est votre tag d'équipe. Cliquez dessus pour le copier et partagez-le aux personnes qui doivent rejoindre l'équipe.
+                        @else
+                            Ceci est le tag d'équipe. Cliquez dessus pour le copier.
+                        @endif
+                    </span>
+
+                    <span x-show="copied" x-cloak class="ml-1 text-xs font-medium">
                         Copié ✓
                     </span>
                 </div>
@@ -83,10 +90,10 @@
                         <div class="text-sm font-medium text-sand-800 mb-2">Membres</div>
                         <ul class="space-y-1 text-sm text-sand-800">
                             @foreach($character->team->characters as $member)
-                                <li class="flex items-center justify-between gap-3">
+                                <li class="flex items-center gap-2">
                                     <span>{{ $member->name }}</span>
                                     @if($member->id === $character->id)
-                                        <span class="text-xs text-teal font-medium">Vous</span>
+                                        <span class="text-xs text-bronze-500 font-medium">Vous</span>
                                     @endif
                                 </li>
                             @endforeach
@@ -103,7 +110,9 @@
         @elseif($canEdit)
             <div class="flex flex-wrap items-center gap-2">
                 <div class="text-sm text-bronze-800 font-medium">
-                    Si vous faites partie d'un groupe de joueurs, créez-le ou rejoignez-le en demandant le slug à votre responsable de groupe
+                    Si vous faites partie d'un groupe de joueurs, rejoignez-le en demandant son
+                    <x-tooltip text="Le tag est un identifiant unique de la forme 'les-petits-pedestres-xy1z2'"><strong>tag</strong></x-tooltip>
+                    à votre responsable de groupe ou créez-le si vous êtes le responsable
                 </div>
 
                 <x-button type="button" variant="primary" size="sm" @click="openTeamCreate = true">
@@ -155,11 +164,13 @@
                     @csrf
 
                     <div>
-                        <label class="block text-sm font-medium text-sand-800 mb-1">Slug d’équipe</label>
+                        <label class="block text-sm font-medium text-sand-800 mb-1">
+                            <x-tooltip text="Le tag est un identifiant unique de la forme 'les-petits-pedestres-xy1z2'">Tag d’équipe</x-tooltip>
+                            <span class="ml-1 text-xs text-sand-700">
+                                Demandez-le à votre responsable d'équipe. Pour lui, il apparaît sous le nom de l'équipe.
+                            </span>
+                        </label>
                         <x-input name="slug" value="{{ old('slug') }}" full />
-                        <p class="mt-2 text-xs text-sand-700">
-                            Le slug ressemble à : <span class="font-mono">les-petits-pedestres-a1b2c3</span>
-                        </p>
                     </div>
 
                     <div class="flex items-center justify-end gap-2">

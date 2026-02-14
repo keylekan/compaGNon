@@ -52,7 +52,7 @@ class CharacterTeamController extends Controller
         $team = Team::query()->where('slug', $validated['slug'])->first();
 
         if (! $team) {
-            return back()->withErrors(['slug' => 'Slug introuvable.'])->withInput();
+            return back()->withErrors(['slug' => 'Tag introuvable. Demandez-le à votre responsable d\'équipe.'])->withInput();
         }
 
         $character->team()->associate($team);

@@ -111,7 +111,7 @@
                 <div class="grid gap-2 sm:grid-cols-7 md:grid-cols-42 md:items-center">
                     {{-- Joueur --}}
                     <div class="sm:col-span-3 md:col-span-10">
-                        <div class="text-sm font-semibold">
+                        <div class="text-sm font-semibold {{empty($reg->user?->name) ? 'opacity-70' : ''}}">
                             {{ $userName }}
                             @if($userAge) <span class="text-xs font-medium text-sand-800">{{$userAge}} ans</span> @endif
                         </div>
@@ -121,7 +121,7 @@
                     </div>
 
                     {{-- Perso --}}
-                    <div class="sm:col-span-4 md:col-span-19">
+                    <div class="sm:col-span-4 md:col-span-18">
                         @if($char)
                             <div class="text-sm">
                                 <span class="font-semibold">{{ $charName }}</span><!--
@@ -147,7 +147,7 @@
                     </div>
 
                     {{-- Statut paiement --}}
-                    <div class="sm:col-span-3 md:col-span-4">
+                    <div class="sm:col-span-3 md:col-span-5">
                         <div class="text-xs opacity-70 mb-1">Paiement</div>
                         <x-badge-payment :status="$reg->payment_status"/>
                     </div>

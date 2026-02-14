@@ -17,7 +17,7 @@
         @click="{{ $canClose }} && ({{ $show }} = false)">
         <div
             x-transition
-            class="w-full max-w-2xl rounded-2xl border border-sand-300 bg-sand-50 shadow-lg overflow-hidden"
+            class="w-full max-w-2xl rounded-2xl border border-sand-300 bg-sand-50 shadow-lg"
             @click.stop
         >
             <div class="flex items-center justify-between px-6 py-3 border-b border-sand-300">
