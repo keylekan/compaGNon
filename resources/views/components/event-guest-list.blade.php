@@ -16,7 +16,8 @@
     $inviteOptions = [
         InviteStatus::INVITED->value => InviteStatus::INVITED->label(),
         InviteStatus::CONFIRMED->value => InviteStatus::CONFIRMED->label(),
-        InviteStatus::CANCELLED->value => InviteStatus::CANCELLED->label(),
+        InviteStatus::ACCEPTED->value => InviteStatus::ACCEPTED->label(),
+        InviteStatus::REFUSED->value => InviteStatus::REFUSED->label(),
     ];
 
     $paymentOptions = [
