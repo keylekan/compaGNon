@@ -4,8 +4,9 @@
 
 <?php
 $variant = match ($status->value) {
-    'confirmed', 'linked' => 'good',
+    'confirmed', 'accepted' => 'good',
     'cancelled' => 'warn',
+    'refused' => 'bad',
     default => null,
 };
 ?>

@@ -16,11 +16,11 @@
             </div>
 
             <div class="flex gap-2">
-                <!--
-                <x-button-link size="sm" href="{{ route('characters.edit', $character) }}">
-                    Modifier
-                </x-button-link>
-                -->
+                @can('delete', $character)
+                <x-button-confirm action="{{ route('characters.destroy', $character) }}">
+                    Supprimer
+                </x-button-confirm>
+                @endcan
 
                 <x-button-link variant="secondary" size="sm" href="{{ route('characters.index') }}">
                     ← Retour

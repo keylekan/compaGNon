@@ -29,6 +29,30 @@ class EventRegistrationController extends Controller
         $registration->invite_status = InviteStatus::CONFIRMED; // adapte au champ réel (inviteValue, etc.)
         $registration->save();
 
-        return back()->with('success', 'Participation confirmée.');
+        return back()->with('success', 'Inscription réussie.');
+    }
+
+    public function accept(Request $request, EventRegistration $eventRegistration)
+    {
+        if (! $request->user()?->admin) {
+            abort(403);
+        }
+
+        $eventRegistration->invite_status = InviteStatus::ACCEPTED;
+        $eventRegistration->save();
+
+        return back()->with('success', 'Inscription acceptée.');
+    }
+
+    public function refuse(Request $request, EventRegistration $eventRegistration)
+    {
+        if (! $request->user()?->admin) {
+            abort(403);
+        }
+
+        $eventRegistration->invite_status = InviteStatus::REFUSED;
+        $eventRegistration->save();
+
+        return back()->with('success', 'Inscription refusée.');
     }
 }

@@ -1,3 +1,4 @@
+@php use App\Enums\InviteStatus; @endphp
 <x-app-layout size="4xl">
     @php
         $starts = $event->starts_at?->format('d/m/Y H:i');
@@ -81,15 +82,26 @@
         @endif
 
         {{-- Bloc "Participation" : masqué une fois confirmé --}}
-        @if(!is_null($registration) && $inviteValue !== 'confirmed')
+        @if(!is_null($registration) && $invite !== InviteStatus::CONFIRMED && $invite !== InviteStatus::ACCEPTED)
             <x-panel>
                 <h2 class="text-lg font-semibold text-sand-950">Participation</h2>
-                <p class="mt-1 text-sm text-sand-700">
-                    Pour confirmer votre présence, choisissez le personnage qui participera (paiement géré à part).
-                </p>
+                @if($invite === InviteStatus::REFUSED)
+                    <p class="mt-1 text-sm text-error">
+                        Votre personnage
+                        @if($registration->character)<strong>{{$registration->character->name}}</strong>@endif
+                        a été refusé. Veuillez en enregistrer un autre. Si vous avez besoin de détails, contactez un orga.
+                    </p>
+                @else
+                    <p class="mt-1 text-sm text-sand-700">
+                        Pour confirmer votre présence, choisissez le personnage qui participera (paiement géré à part).
+                    </p>
+                @endif
 
                 <?php
-                    $characters = auth()->user()->characters->sortByDesc('created_at')
+                    $characters = auth()->user()->characters->sortByDesc('created_at');
+                    if($registration->character) {
+                        $characters = $characters->where('id', '!=', $registration->character->id);
+                    }
                 ?>
 
                 <div class="mt-4">
@@ -120,7 +132,7 @@
                             class="rounded-lg border border-sand-200 bg-sand-50 p-4"
                             x-data="{
                         open: false,
-                        selectedId: {{ (int) ($registration?->character_id ?? ($characters->first()->id ?? 0)) }},
+                        selectedId: {{ (int) ($characters->first()->id ?? 0) }},
                         options: [
                             @foreach($characters as $c)
                                 {

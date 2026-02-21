@@ -71,7 +71,6 @@ class InviteUsersToEventAction
                     }
 
                     $registration->user_id = $user->id;
-                    $registration->invite_status = InviteStatus::LINKED;
                     $registration->linked_at ??= $now;
 
                     $stats['linked']++;

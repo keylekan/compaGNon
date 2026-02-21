@@ -30,6 +30,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('events/{event}/registration/confirm', [EventRegistrationController::class, 'confirm'])
         ->name('events.registrations.confirm');
+    Route::post('event-registrations/{eventRegistration}/accept', [EventRegistrationController::class, 'accept'])
+        ->name('events.registrations.accept');
+    Route::post('event-registrations/{eventRegistration}/refuse', [EventRegistrationController::class, 'refuse'])
+        ->name('events.registrations.refuse');
 
     // User settings
     Route::get('/account/settings', [AccountSettingsController::class, 'edit'])

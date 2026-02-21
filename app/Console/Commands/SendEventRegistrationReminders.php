@@ -20,8 +20,7 @@ class SendEventRegistrationReminders extends Command
 
         $registrations = EventRegistration::query()
             ->with(['event'])
-            ->whereNull('character_id')
-            ->whereNot('invite_status', InviteStatus::CANCELLED)
+            ->whereNotIn('invite_status', [InviteStatus::CONFIRMED, InviteStatus::CANCELLED, InviteStatus::ACCEPTED])
             ->where(function (Builder $query) {
                 $query->whereNull('reminder_sent_at')
                     ->orWhereDate('reminder_sent_at', '<=', now()->subDays(15));

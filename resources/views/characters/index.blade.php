@@ -13,6 +13,8 @@
         </x-button-link>
     </div>
 
+    <x-info-panel class="mb-2" :message="session('success')" />
+
     {{-- Liste --}}
     @if ($characters->isEmpty())
         <div class="bg-sand-50 border border-bronze-200 rounded-lg p-8 text-center">

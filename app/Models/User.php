@@ -89,7 +89,6 @@ class User extends Authenticatable
             ->whereNull('user_id')
             ->update([
                 'user_id' => $this->id,
-                'invite_status' => InviteStatus::LINKED,
                 'linked_at' => now(),
                 'updated_at' => now(),
             ]);

@@ -5,7 +5,7 @@
     </x-slot:header>
 
     <div class="grid gap-6 lg:grid-cols-3">
-        {{-- Mon personnage --}}
+        {{-- Mes personnages --}}
         @php
             $mainCharacter = auth()->user()->mainCharacter;
         @endphp
@@ -13,8 +13,8 @@
         <x-panel class="lg:col-span-1 self-start">
             <div class="flex items-start justify-between gap-3">
                 <div>
-                    <h2 class="text-lg font-semibold">Mon personnage</h2>
-                    <p class="mt-1 text-sm text-sand-700">Accès rapide à votre fiche.</p>
+                    <h2 class="text-lg font-semibold">Mes personnages</h2>
+                    <p class="mt-1 text-sm text-sand-700">Voici votre personnage principal</p>
                 </div>
                 <x-button-link href="{{ route('characters.index') }}" variant="panel">
                     Gérer

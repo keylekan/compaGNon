@@ -10,6 +10,7 @@ use App\Models\PlayableClass;
 use App\Models\PlayableRace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class CharacterController extends Controller
 {
@@ -86,7 +87,7 @@ class CharacterController extends Controller
         $nextPendingEvent = Event::query()
             ->whereHas('registrations', function ($q) use ($user) {
                 $q->where('user_id', $user->id)
-                    ->whereNotIn('invite_status', ['confirmed', 'cancelled']);
+                    ->whereNotIn('invite_status', ['confirmed', 'accepted', 'cancelled']);
             })
             ->where('starts_at', '>=', now())
             ->orderBy('starts_at')
@@ -122,8 +123,14 @@ class CharacterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Character $character)
     {
-        //
+        Gate::authorize('delete', $character);
+
+        $character->delete();
+
+        return redirect()
+            ->route('characters.index')
+            ->with('success', "Le personnage a bien été supprimé.");
     }
 }
