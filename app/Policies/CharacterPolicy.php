@@ -32,7 +32,9 @@ class CharacterPolicy
     public function delete(User $user, Character $character): bool
     {
         if ($character->user_id === $user->id) {
-            return true;
+            if (!$character->registrations()->exists()) {
+                return true;
+            }
         }
 
         return false;
