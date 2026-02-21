@@ -62,7 +62,7 @@
         <x-info-panel :message="session('success')" />
 
         {{-- Bloc "Mon personnage" : visible seulement si participation confirmée --}}
-        @if($inviteValue === 'confirmed' && $registration?->character)
+        @if(($invite === InviteStatus::CONFIRMED || $invite === InviteStatus::ACCEPTED) && $registration?->character)
             <x-panel>
                 <div class="flex items-start justify-between gap-4">
                     <div>
