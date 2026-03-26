@@ -1,5 +1,6 @@
 @php use App\Enums\InviteStatus;use App\Enums\PaymentStatus; @endphp
 @props([
+    'event', // LengthAwarePaginator<EventRegistration>
     'registrations', // LengthAwarePaginator<EventRegistration>
     'filters' => ['q' => '', 'invite_status' => '', 'payment_status' => ''],
 ])
@@ -29,6 +30,14 @@
 @endphp
 
 <x-panel class="space-y-4" :main="false">
+    <x-button-link
+        :href="route('events.participants.export', $event)"
+        variant="panel"
+        size="sm"
+    >
+        Export CSV des participants
+    </x-button-link>
+
     {{-- Barre de filtres --}}
     <form method="GET" class="grid gap-3 md:grid-cols-12">
         <div class="md:col-span-6">
