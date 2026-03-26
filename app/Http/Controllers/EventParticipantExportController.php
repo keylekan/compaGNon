@@ -36,6 +36,7 @@ class EventParticipantExportController extends Controller
             fwrite($handle, "\xEF\xBB\xBF");
 
             fputcsv($handle, [
+                'Email',
                 'Nom du joueur',
                 'Âge du joueur',
                 'Nom du perso',
@@ -49,15 +50,16 @@ class EventParticipantExportController extends Controller
 
             foreach ($event->registrations as $registration) {
                 fputcsv($handle, [
-                    $registration->user?->name ?? '',
-                    $registration->user?->age ?? '',
-                    $registration->character?->name ?? '',
-                    $registration->character?->gender ?? '',
-                    $registration->character?->race->title ?? '',
-                    $registration->character?->classes->pluck('title')->implode(', ') ?? '',
-                    $registration->character?->god->name ?? '',
-                    $registration->character?->alignment ?? '',
-                    $registration->character?->team?->name ?? '',
+                    $registration->email ?? '',
+                    $registration->user?->name ?? '- Invité -',
+                    $registration->user?->age ?? '-',
+                    $registration->character?->name ?? '-',
+                    $registration->character?->gender ?? '-',
+                    $registration->character?->race->title ?? '-',
+                    $registration->character?->classes->pluck('title')->implode(', ') ?? '-',
+                    $registration->character?->god->name ?? '-',
+                    $registration->character?->alignment ?? '-',
+                    $registration->character?->team?->name ?? '-',
                 ], ';');
             }
 
