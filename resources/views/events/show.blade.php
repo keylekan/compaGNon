@@ -326,7 +326,7 @@
             </div>
         </x-panel>
 
-        <x-event-guest-list :registrations="$registrations" :filters="$registrationsFilters" />
+        <x-event-guest-list :event="$event" :registrations="$registrations" :filters="$registrationsFilters" />
         @endcan
     </div>
 </x-app-layout>

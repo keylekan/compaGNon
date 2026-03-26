@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\CharacterTeamController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventParticipantExportController;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Logout;
@@ -27,6 +28,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('events', EventController::class);
     Route::post('/events/{event}/invite', [EventController::class, 'invite'])
         ->name('events.invite');
+    Route::get('/events/{event}/participants/export', EventParticipantExportController::class)
+        ->name('events.participants.export');
 
     Route::post('events/{event}/registration/confirm', [EventRegistrationController::class, 'confirm'])
         ->name('events.registrations.confirm');
@@ -34,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('events.registrations.accept');
     Route::post('event-registrations/{eventRegistration}/refuse', [EventRegistrationController::class, 'refuse'])
         ->name('events.registrations.refuse');
+
 
     // User settings
     Route::get('/account/settings', [AccountSettingsController::class, 'edit'])
