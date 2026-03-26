@@ -2,6 +2,7 @@
     <div class="space-y-6">
         @php
             $isOwner = auth()->id() === $character->user_id;
+            $totalBonuses = $character->total_bonuses;
         @endphp
 
         {{-- En-tête --}}
@@ -171,7 +172,7 @@
                         <div class="flex gap-0.5 flex-col rounded-lg border border-sand-200 bg-white px-3 py-1">
                             <dt class="text-xs text-sand-700">PV</dt>
                             <dd class="font-semibold text-bronze-900">
-                                À venir
+                                {{ $totalBonuses['hit_points'] }}
                             </dd>
                         </div>
                     </dl>
@@ -252,13 +253,11 @@
                 </form>
             </div>
 
-            {{-- Placeholder progression --}}
-            <div class="mt-6 rounded-lg border border-dashed border-bronze-400 bg-sand-50 p-5 text-sm text-bronze-400">
-                <p>
-                    Compétences, dons et calculs avancés (PV, progression, multiclasse)
-                    seront affichés ici ultérieurement.
-                </p>
-            </div>
+            <x-character.skills-panel
+                :character="$character"
+                :availablePoints="$availablePoints"
+                :availableSkills="$availableSkills"
+            />
         </x-panel>
     </div>
 </x-app-layout>

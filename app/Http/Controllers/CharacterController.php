@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\God;
 use App\Models\PlayableClass;
 use App\Models\PlayableRace;
+use App\Models\Skill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -41,6 +42,7 @@ class CharacterController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Throwable
      */
     public function store(StoreCharacterRequest $request)
     {
@@ -56,11 +58,26 @@ class CharacterController extends Controller
                 'gender'    => $data['gender'],
                 'alignment' => $data['alignment'],
                 'race_id'   => $data['race_id'],
-                'god_id'   => $data['god_id'],
+                'god_id'    => $data['god_id'],
             ]);
 
-            // 2) Première classe (niveau 1)
-            $character->classes()->attach($data['playable_class_id']);
+            // 2) Créer sa première classe
+            $characterClass = $character->characterClasses()->create([
+                'class_id' => $data['playable_class_id'],
+                'level' => 1,
+            ]);
+
+            // 3) Enregistrer les niveaux 0 et 1
+            $characterClass->levels()->createMany([
+                [
+                    'level' => 0,
+                    'variant' => 'default',
+                ],
+                [
+                    'level' => 1,
+                    'variant' => 'default',
+                ],
+            ]);
 
             return $character;
         });
@@ -93,7 +110,29 @@ class CharacterController extends Controller
             ->orderBy('starts_at')
             ->first();
 
-        return view('characters.show', compact('character', 'nextPendingEvent'));
+        $totalBonuses = $character->total_bonuses;
+
+        $spentPoints = [
+            'points_c' => $character->skills->sum('cost_c'),
+            'points_l' => $character->skills->sum('cost_l'),
+            'points_v' => $character->skills->sum('cost_v'),
+            'points_r' => $character->skills->sum('cost_r'),
+        ];
+
+        $availablePoints = [
+            'points_c' => max(0, $totalBonuses['points_c'] - $spentPoints['points_c']),
+            'points_l' => max(0, $totalBonuses['points_l'] - $spentPoints['points_l']),
+            'points_v' => max(0, $totalBonuses['points_v'] - $spentPoints['points_v']),
+            'points_r' => max(0, $totalBonuses['points_r'] - $spentPoints['points_r']),
+        ];
+
+        $availableSkills = Skill::query()
+            ->withAvailablePointCost()
+            ->availableForCharacter($character)
+            ->orderBy('title')
+            ->get();
+
+        return view('characters.show', compact('character', 'nextPendingEvent', 'availablePoints', 'availableSkills'));
     }
 
     /**

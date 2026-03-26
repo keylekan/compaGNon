@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CharacterController;
+use App\Http\Controllers\CharacterSkillController;
 use App\Http\Controllers\CharacterTeamController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventRegistrationController;
@@ -20,6 +21,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/characters/{character}/team/join', [CharacterTeamController::class, 'join'])
         ->name('characters.team.join');
+
+    Route::post('/characters/{character}/skills', [CharacterSkillController::class, 'store'])
+        ->name('characters.skills.store');
 
     Route::delete('/characters/{character}/team', [CharacterTeamController::class, 'leave'])
         ->name('characters.team.leave');

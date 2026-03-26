@@ -14,6 +14,7 @@ class PlayableRaceSeeder extends Seeder
                 'slug' => 'elfe',
                 'title' => 'Elfe',
                 'image_path' => 'images/races/elfe.webp',
+                'hp_modifier' => -1,
                 'description' => <<<MD
 Les elfes mesurent au moins **1m70** et sont plutôt sveltes, avec des **oreilles pointues**.
 
@@ -43,6 +44,7 @@ MD
                 'slug' => 'hobbit',
                 'title' => 'Hobbit',
                 'image_path' => 'images/races/hobbit.webp',
+                'hp_modifier' => -1,
                 'description' => <<<MD
 Les hobbits mesurent au maximum **1m55**. Leurs **pieds larges** sont généralement **velus**.
 
@@ -57,6 +59,8 @@ MD
                 'slug' => 'humain',
                 'title' => 'Humain',
                 'image_path' => 'images/races/humain.webp',
+                'points_c' => 2,
+                'points_l' => 1,
                 'description' => <<<MD
 Les humains ont une **faculté d’apprentissage élevée**.
 
@@ -83,6 +87,7 @@ MD
                 'slug' => 'nain',
                 'title' => 'Nain',
                 'image_path' => 'images/races/nain.webp',
+                'hp_modifier' => 1,
                 'description' => <<<MD
 Les nains mesurent au maximum **1m65**. Barbe et forte corpulence sont leurs signes les plus remarquables. Ils ont une aversion pour la magie.
 
@@ -104,6 +109,11 @@ MD
                     'title' => $race['title'],
                     'description' => $race['description'],
                     'image_path' => $race['image_path'],
+                    'hp_modifier' => $race['hp_modifier'] ?? 0,
+                    'points_c' => $race['points_c'] ?? 0,
+                    'points_l' => $race['points_l'] ?? 0,
+                    'points_v' => $race['points_v'] ?? 0,
+                    'points_r' => $race['points_r'] ?? 0,
                 ]
             );
         }

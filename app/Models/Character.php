@@ -82,8 +82,53 @@ class Character extends Model
             ->withTimestamps();
     }
 
+    public function characterClasses(): HasMany
+    {
+        return $this->hasMany(CharacterClass::class);
+    }
+
     public function registrations(): HasMany
     {
         return $this->hasMany(EventRegistration::class);
+    }
+
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class, 'character_skill')
+            ->withPivot([
+                'cost_paid_c',
+                'cost_paid_l',
+                'cost_paid_v',
+                'cost_paid_r',
+                'purchased_at',
+            ])
+            ->withTimestamps();
+    }
+
+    public function getTotalBonusesAttribute(): array
+    {
+        $this->loadMissing(
+            'race',
+            'characterClasses.levels',
+            'characterClasses.class.levelBonuses'
+        );
+
+        $classBonuses = $this->characterClasses->flatMap(function ($characterClass) {
+            $selectedLevels = $characterClass->levels
+                ->keyBy(fn ($level) => $level->level . ':' . $level->variant);
+
+            return $characterClass->class->levelBonuses
+                ->filter(fn ($bonus) => $selectedLevels->has($bonus->level . ':' . $bonus->variant));
+        });
+
+        $race = $this->race;
+
+        return [
+            'hit_points' => $classBonuses->sum('hit_points') + ($race?->hp_modifier ?? 0),
+            'points_c'   => $classBonuses->sum('points_c') + ($race?->points_c ?? 0),
+            'points_l'   => $classBonuses->sum('points_l') + ($race?->points_l ?? 0),
+            'points_v'   => $classBonuses->sum('points_v') + ($race?->points_v ?? 0),
+            'points_r'   => $classBonuses->sum('points_r') + ($race?->points_r ?? 0),
+        ];
     }
 }
