@@ -9,6 +9,7 @@ class ClassLevelBonus extends Model
 {
     protected $fillable = [
         'playable_class_id',
+        'variant',
         'level',
         'xp_needed',
         'hit_points',

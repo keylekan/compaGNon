@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
             GodSeeder::class,
             SkillSeeder::class,
             ClassLevelBonusSeeder::class,
+            CharacterClassLevelSeeder::class,
+            CharacterSkillSeeder::class,
         ]);
     }
 }

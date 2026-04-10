@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Character extends Model
 {
@@ -96,13 +97,47 @@ class Character extends Model
     {
         return $this->belongsToMany(Skill::class, 'character_skill')
             ->withPivot([
+                'quantity',
                 'cost_paid_c',
                 'cost_paid_l',
                 'cost_paid_v',
                 'cost_paid_r',
+                'locked',
                 'purchased_at',
             ])
             ->withTimestamps();
+    }
+
+    public function aggregatedSkills()
+    {
+        return $this->belongsToMany(Skill::class, 'character_skill')
+            ->select([
+                'skills.id',
+                'skills.title',
+                'skills.description',
+                'skills.cost_c',
+                'skills.cost_l',
+                'skills.cost_v',
+                'skills.cost_r',
+                DB::raw('SUM(character_skill.quantity) as quantity'),
+                DB::raw('SUM(character_skill.cost_paid_c) as cost_paid_c'),
+                DB::raw('SUM(character_skill.cost_paid_l) as cost_paid_l'),
+                DB::raw('SUM(character_skill.cost_paid_v) as cost_paid_v'),
+                DB::raw('SUM(character_skill.cost_paid_r) as cost_paid_r'),
+                DB::raw('MIN(character_skill.locked) as locked'),
+                DB::raw('MAX(character_skill.purchased_at) as last_purchased_at'),
+            ])
+            ->groupBy(
+                'skills.id',
+                'skills.title',
+                'skills.description',
+                'skills.cost_c',
+                'skills.cost_l',
+                'skills.cost_v',
+                'skills.cost_r',
+                'character_skill.skill_id',
+                'character_skill.character_id'
+            );
     }
 
     public function getTotalBonusesAttribute(): array
@@ -129,6 +164,30 @@ class Character extends Model
             'points_l'   => $classBonuses->sum('points_l') + ($race?->points_l ?? 0),
             'points_v'   => $classBonuses->sum('points_v') + ($race?->points_v ?? 0),
             'points_r'   => $classBonuses->sum('points_r') + ($race?->points_r ?? 0),
+        ];
+    }
+
+    public function getSpentPointsAttribute(): array
+    {
+        return [
+            'c' => $this->skills->sum('pivot.cost_paid_c'),
+            'l' => $this->skills->sum('pivot.cost_paid_l'),
+            'v' => $this->skills->sum('pivot.cost_paid_v'),
+            'r' => $this->skills->sum('pivot.cost_paid_r'),
+        ];
+    }
+
+    public function getAvailablePointsAttribute(): array
+    {
+        $totalBonuses = $this->total_bonuses;
+
+        $spentPoints = $this->spent_points;
+
+        return [
+            'c' => max(0, $totalBonuses['points_c'] - $spentPoints['c']),
+            'l' => max(0, $totalBonuses['points_l'] - $spentPoints['l']),
+            'v' => max(0, $totalBonuses['points_v'] - $spentPoints['v']),
+            'r' => max(0, $totalBonuses['points_r'] - $spentPoints['r']),
         ];
     }
 }

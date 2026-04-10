@@ -6,6 +6,7 @@ use App\Models\Character;
 use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class CharacterSkillController extends Controller
@@ -16,50 +17,75 @@ class CharacterSkillController extends Controller
 
         $data = $request->validate([
             'skill_id' => ['required', 'exists:skills,id'],
+            'quantity' => ['required', 'integer', 'min:1'],
+            'payment' => ['required', 'array'],
+            'payment.C' => ['nullable', 'integer', 'min:0'],
+            'payment.L' => ['nullable', 'integer', 'min:0'],
+            'payment.V' => ['nullable', 'integer', 'min:0'],
+            'payment.R' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        $payment = array_merge([
+            'C' => 0,
+            'L' => 0,
+            'V' => 0,
+            'R' => 0,
+        ], $data['payment']);
 
         $character->loadMissing('skills');
 
         $skill = Skill::findOrFail($data['skill_id']);
 
-        if ($character->skills->contains($skill->id)) {
-            return back()->with('error', 'Cette compétence est déjà acquise.');
+        $currentPurchases = $character->skills()
+            ->where('skills.id', $skill->id)
+            ->count();
+        if ($skill->max_purchases && $currentPurchases >= $skill->max_purchases) {
+            return back()->with('skill-error', 'Cette compétence a atteint son maximum.')->withFragment('skills');
         }
 
-        $totalBonuses = $character->total_bonuses;
+        $availablePoints = $character->available_points;
 
-        $spentPoints = [
-            'points_c' => $character->skills->where('type', 'c')->sum('cost'),
-            'points_l' => $character->skills->where('type', 'l')->sum('cost'),
-            'points_v' => $character->skills->where('type', 'v')->sum('cost'),
-            'points_r' => $character->skills->where('type', 'r')->sum('cost'),
-        ];
-
-        $availablePoints = [
-            'points_c' => max(0, $totalBonuses->points_c - $spentPoints['points_c']),
-            'points_l' => max(0, $totalBonuses->points_l - $spentPoints['points_l']),
-            'points_v' => max(0, $totalBonuses->points_v - $spentPoints['points_v']),
-            'points_r' => max(0, $totalBonuses->points_r - $spentPoints['points_r']),
-        ];
-
-        $pointKey = match ($skill->type) {
-            'c' => 'points_c',
-            'l' => 'points_l',
-            'v' => 'points_v',
-            'r' => 'points_r',
-            default => null,
-        };
-
-        if (! $pointKey) {
-            return back()->with('error', 'Type de compétence invalide.');
+        if (
+            $payment['C'] > $availablePoints['c']
+            || $payment['L'] > $availablePoints['l']
+            || $payment['V'] > $availablePoints['v']
+            || $payment['R'] > $availablePoints['r']
+        ) {
+            return back()->with('skill-error', 'Points insuffisants pour acheter cette compétence.')->withFragment('skills');
         }
 
-        if (($availablePoints[$pointKey] ?? 0) < $skill->cost) {
-            return back()->with('error', 'Points insuffisants pour acheter cette compétence.');
+        $character->skills()->attach($skill->id, [
+            'quantity' => $data['quantity'],
+            'cost_paid_c' => $payment['C'],
+            'cost_paid_l' => $payment['L'],
+            'cost_paid_v' => $payment['V'],
+            'cost_paid_r' => $payment['R'],
+            'purchased_at' => now(),
+        ]);
+
+        return back()->with('skill-success', 'Compétence achetée avec succès.')->withFragment('skills');
+    }
+
+    public function destroy(Character $character, Skill $skill): RedirectResponse
+    {
+        abort_unless($character->user_id === auth()->id(), 403);
+
+        $lastPurchase = DB::table('character_skill')
+            ->where('character_id', $character->id)
+            ->where('skill_id', $skill->id)
+            ->where('locked', false)
+            ->orderByDesc('purchased_at')
+            ->orderByDesc('id')
+            ->first();
+
+        if (! $lastPurchase) {
+            return back()->with('skill-error', 'Cette compétence est verrouillée.')->withFragment('skills');
         }
 
-        $character->skills()->attach($skill->id);
+        DB::table('character_skill')
+            ->where('id', $lastPurchase->id)
+            ->delete();
 
-        return back()->with('success', 'Compétence achetée avec succès.');
+        return back()->with('skill-success', 'Un niveau de compétence a été retiré.')->withFragment('skills');
     }
 }

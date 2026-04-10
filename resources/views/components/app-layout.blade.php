@@ -301,5 +301,7 @@
         © {{ date('Y') }} Les Derniers de Solace
     </div>
 </footer>
+
+@stack('scripts')
 </body>
 </html>

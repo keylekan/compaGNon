@@ -253,11 +253,13 @@
                 </form>
             </div>
 
+            @if(Auth::user()->admin)
             <x-character.skills-panel
                 :character="$character"
                 :availablePoints="$availablePoints"
                 :availableSkills="$availableSkills"
             />
+            @endif
         </x-panel>
     </div>
 </x-app-layout>

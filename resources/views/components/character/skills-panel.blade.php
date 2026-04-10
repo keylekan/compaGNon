@@ -1,19 +1,28 @@
 @props([
     'character',
     'availablePoints' => [
-        'points_c' => 0,
-        'points_l' => 0,
-        'points_v' => 0,
-        'points_r' => 0,
+        'c' => 0,
+        'l' => 0,
+        'v' => 0,
+        'r' => 0,
     ],
     'availableSkills' => collect(),
 ])
+
+@php
+    $points_c = $availablePoints['c'] ?? 0;
+    $points_l = $availablePoints['l'] ?? 0;
+    $points_v = $availablePoints['v'] ?? 0;
+    $points_r = $availablePoints['r'] ?? 0;
+
+    $skills = $character->aggregatedSkills()->get();
+@endphp
 
 <div
     x-data="{ open: false }"
     class="mt-6 space-y-4"
 >
-    <div class="rounded-xl border border-sand-200 bg-white p-5">
+    <div id="skills" class="rounded-xl border border-sand-200 bg-white p-5">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
                 <h2 class="text-sm font-semibold text-bronze-900">
@@ -36,40 +45,48 @@
             </div>
         </div>
 
+        <x-info-panel class="mt-5" :message="session('skill-success')" />
+
+        @if (session('skill-error'))
+            <div class="mt-5 rounded-lg border border-b-red-800 bg-sand-200 px-4 py-3 text-sm text-red-800">
+                {{ session('skill-error') }}
+            </div>
+        @endif
+
         {{-- Points disponibles --}}
         <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            @if($availablePoints['points_c'] !== 0)
+            @if($points_c !== 0)
                 <div class="rounded-xl border border-sand-200 bg-sand-50 px-4 py-3">
                     <p class="text-xs uppercase tracking-wide text-sand-600">Points C</p>
                     <p class="mt-1 text-2xl font-semibold text-bronze-900">
-                        {{ $availablePoints['points_c'] ?? 0 }}
+                        {{ $points_c }}
                     </p>
                 </div>
             @endif
 
-            @if($availablePoints['points_l'] !== 0)
+            @if($points_l !== 0)
                 <div class="rounded-xl border border-sand-200 bg-sand-50 px-4 py-3">
                     <p class="text-xs uppercase tracking-wide text-sand-600">Points L</p>
                     <p class="mt-1 text-2xl font-semibold text-bronze-900">
-                        {{ $availablePoints['points_l'] ?? 0 }}
+                        {{ $points_l }}
                     </p>
                 </div>
             @endif
 
-            @if($availablePoints['points_v'] !== 0)
+            @if($points_v !== 0)
                 <div class="rounded-xl border border-sand-200 bg-sand-50 px-4 py-3">
                     <p class="text-xs uppercase tracking-wide text-sand-600">Points V</p>
                     <p class="mt-1 text-2xl font-semibold text-bronze-900">
-                        {{ $availablePoints['points_v'] ?? 0 }}
+                        {{ $points_v }}
                     </p>
                 </div>
             @endif
 
-            @if($availablePoints['points_r'] !== 0)
+            @if($points_r !== 0)
                 <div class="rounded-xl border border-sand-200 bg-sand-50 px-4 py-3">
                     <p class="text-xs uppercase tracking-wide text-sand-600">Points V1</p>
                     <p class="mt-1 text-2xl font-semibold text-bronze-900">
-                        {{ $availablePoints['points_r'] ?? 0 }}
+                        {{ $points_r }}
                     </p>
                 </div>
             @endif
@@ -83,30 +100,78 @@
                 </p>
             </div>
 
-            @if($character->skills->isEmpty())
+            @if($skills->isEmpty())
                 <div class="mt-3 rounded-lg border border-dashed border-sand-300 bg-sand-50 px-4 py-4 text-sm text-sand-700">
                     Aucune compétence achetée pour le moment.
                 </div>
             @else
                 <ul class="mt-3 grid gap-3 md:grid-cols-2">
-                    @foreach($character->skills as $skill)
+                    @foreach($skills as $skill)
                         <li class="rounded-xl border border-sand-200 bg-sand-50 px-4 py-3">
                             <div class="flex items-start justify-between gap-3">
-                                <div>
-                                    <p class="font-semibold text-bronze-900">
-                                        {{ $skill->name }}
-                                    </p>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-semibold text-bronze-900">
+                                            {{ $skill->title }}
+                                        </h3>
+
+                                        @if($skill->is_feat)
+                                            <span class="inline-flex items-center rounded-full border border-bronze-600 bg-bronze-400 px-2 py-0.5 text-xs font-semibold text-white">
+                                                Don
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center rounded-full border border-bronze-400 bg-bronze-100 px-2 py-0.5 text-xs font-semibold text-bronze-800">
+                                                x{{ $skill->quantity }}
+                                            </span>
+                                        @endif
+
+                                        <form
+                                            class="ml-auto"
+                                            method="POST"
+                                            action="{{ route('characters.skills.destroy', [$character, $skill]) }}"
+                                        >
+                                            @csrf
+                                            @method('DELETE')
+
+                                            @if(! $skill->locked)
+                                                <x-button variant="primary" size="sm" type="submit">
+                                                    Supprimer
+                                                </x-button>
+                                            @endif
+                                        </form>
+                                    </div>
 
                                     @if(!empty($skill->description))
                                         <p class="mt-1 text-sm text-sand-700">
-                                            {{ $skill->description }}
+                                            {{ Str::limit($skill->description, 120) }}
                                         </p>
                                     @endif
-                                </div>
 
-                                <div class="shrink-0 rounded-full border border-sand-200 bg-white px-2.5 py-1 text-xs text-bronze-700">
-                                    {{ strtoupper($skill->type) }}
-                                    · {{ $skill->cost }}
+                                    <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                                        @if(($skill->cost_paid_c ?? 0) > 0)
+                                            <span class="rounded-full border border-sand-300 bg-white px-2 py-1 text-sand-800">
+                                                {{ $skill->cost_paid_c }}C
+                                            </span>
+                                        @endif
+
+                                        @if(($skill->cost_paid_l ?? 0) > 0)
+                                            <span class="rounded-full border border-sand-300 bg-white px-2 py-1 text-sand-800">
+                                                {{ $skill->cost_paid_l }}L
+                                            </span>
+                                        @endif
+
+                                        @if(($skill->cost_paid_v ?? 0) > 0)
+                                            <span class="rounded-full border border-sand-300 bg-white px-2 py-1 text-sand-800">
+                                                {{ $skill->cost_paid_v }}V
+                                            </span>
+                                        @endif
+
+                                        @if(($skill->cost_paid_r ?? 0) > 0)
+                                            <span class="rounded-full border border-sand-300 bg-white px-2 py-1 text-sand-800">
+                                                {{ $skill->cost_paid_r }}V1
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </li>
@@ -127,16 +192,16 @@
                 <p class="font-medium text-bronze-900">Points disponibles</p>
                 <div class="mt-2 flex flex-wrap gap-2">
                     <span class="rounded-full border border-sand-200 bg-white px-3 py-1 text-xs text-bronze-700">
-                        C : {{ $availablePoints['points_c'] ?? 0 }}
+                        C : {{ $points_c }}
                     </span>
                     <span class="rounded-full border border-sand-200 bg-white px-3 py-1 text-xs text-bronze-700">
-                        L : {{ $availablePoints['points_l'] ?? 0 }}
+                        L : {{ $points_l }}
                     </span>
                     <span class="rounded-full border border-sand-200 bg-white px-3 py-1 text-xs text-bronze-700">
-                        V : {{ $availablePoints['points_v'] ?? 0 }}
+                        V : {{ $points_v }}
                     </span>
                     <span class="rounded-full border border-sand-200 bg-white px-3 py-1 text-xs text-bronze-700">
-                        V1 : {{ $availablePoints['points_r'] ?? 0 }}
+                        V1 : {{ $points_r }}
                     </span>
                 </div>
             </div>
@@ -149,52 +214,31 @@
                 <div class="max-h-[60vh] space-y-3 overflow-y-auto pr-1">
                     @foreach($availableSkills as $skill)
                         @php
-                            $pointKey = match ($skill->type) {
-                                'c' => 'points_c',
-                                'l' => 'points_l',
-                                'v' => 'points_v',
-                                'r' => 'points_r',
-                                default => null,
-                            };
-
-                            $available = $pointKey ? ($availablePoints[$pointKey] ?? 0) : 0;
-                            $canBuy = $available >= $skill->cost;
+                        $maxCost = max($skill->cost_c, $skill->cost_l, $skill->cost_v, $skill->cost_r);
+                        $weight_c = $skill->cost_c > 0 ? $maxCost / $skill->cost_c : 0;
+                        $weight_l = $skill->cost_l > 0 ? $maxCost / $skill->cost_l : 0;
+                        $weight_v = $skill->cost_v > 0 ? $maxCost / $skill->cost_v : 0;
+                        $weight_r = $skill->cost_r > 0 ? $maxCost / $skill->cost_r : 0;
                         @endphp
 
-                        <div class="rounded-xl border border-sand-200 bg-white p-4">
-                            <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-2">
-                                        <p class="font-semibold text-bronze-900">
-                                            {{ $skill->title }}
-                                        </p>
-                                        <span class="rounded-full border border-sand-200 bg-sand-50 px-2 py-0.5 text-[11px] text-bronze-700">
-                                            Coût : {{ $skill->cost }}
-                                        </span>
-                                    </div>
-
-                                    @if(!empty($skill->description))
-                                        <x-markdown class="mt-2 text-sm" value="{{ Js::from($skill->description) }}" />
-                                    @endif
-                                </div>
-
-                                <div class="shrink-0">
-                                    <form method="POST" action="{{ route('characters.skills.store', $character) }}">
-                                        @csrf
-                                        <input type="hidden" name="skill_id" value="{{ $skill->id }}">
-
-                                        <x-button
-                                            type="submit"
-                                            size="sm"
-                                            variant="{{ $canBuy ? 'primary' : 'secondary' }}"
-                                            :disabled="! $canBuy"
-                                        >
-                                            {{ $canBuy ? 'Acheter' : 'Points insuffisants' }}
-                                        </x-button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        <x-skill-payment
+                            :action="route('characters.skills.store', $character)"
+                            method="POST"
+                            :skill="$skill"
+                            :target="$maxCost"
+                            :balances="[
+                                'C' => $points_c,
+                                'L' => $points_l,
+                                'V' => $points_v,
+                                'V1' => $points_r,
+                            ]"
+                            :weights="[
+                                'C' => $weight_c,
+                                'L' => $weight_l,
+                                'V' => $weight_v,
+                                'V1' => $weight_r,
+                            ]"
+                        />
                     @endforeach
                 </div>
             @endif

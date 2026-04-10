@@ -25,6 +25,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/characters/{character}/skills', [CharacterSkillController::class, 'store'])
         ->name('characters.skills.store');
+    Route::delete('/characters/{character}/skills/{skill}', [CharacterSkillController::class, 'destroy'])
+        ->name('characters.skills.destroy');
 
     Route::delete('/characters/{character}/team', [CharacterTeamController::class, 'leave'])
         ->name('characters.team.leave');

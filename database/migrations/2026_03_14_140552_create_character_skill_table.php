@@ -22,10 +22,14 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->unsignedSmallInteger('quantity')->default(1);
+
             $table->unsignedSmallInteger('cost_paid_c')->nullable()->default(null);
             $table->unsignedSmallInteger('cost_paid_l')->nullable()->default(null);
             $table->unsignedSmallInteger('cost_paid_v')->nullable()->default(null);
             $table->unsignedSmallInteger('cost_paid_r')->nullable()->default(null);
+
+            $table->boolean('locked')->default(false);
 
             $table->timestamp('purchased_at')->nullable();
 

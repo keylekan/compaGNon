@@ -27,6 +27,11 @@ class Skill extends Model
         'max_purchases' => 'integer',
     ];
 
+    public function getIsFeatAttribute()
+    {
+        return !$this->cost_c && !$this->cost_l && !$this->cost_v && !$this->cost_r;
+    }
+
     public function characters(): BelongsToMany
     {
         return $this->belongsToMany(Character::class, 'character_skill')

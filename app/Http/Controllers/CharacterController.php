@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\LevelUpCharacterClass;
 use App\Http\Requests\StoreCharacterRequest;
 use App\Models\Character;
 use App\Models\Event;
@@ -9,6 +10,7 @@ use App\Models\God;
 use App\Models\PlayableClass;
 use App\Models\PlayableRace;
 use App\Models\Skill;
+use App\Models\SkillPlayableRace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -44,12 +46,13 @@ class CharacterController extends Controller
      * Store a newly created resource in storage.
      * @throws \Throwable
      */
-    public function store(StoreCharacterRequest $request)
+    public function store(StoreCharacterRequest $request, LevelUpCharacterClass $levelUpCharacterClass)
     {
         $user = $request->user();
+        $data = $request->validated();
+        $playableClassId = $data['playable_class_id'];
 
-        $character = DB::transaction(function () use ($request, $user) {
-            $data = $request->validated();
+        $character = DB::transaction(function () use ($data, $playableClassId, $user) {
 
             // 1) Créer le personnage
             $character = Character::create([
@@ -63,24 +66,35 @@ class CharacterController extends Controller
 
             // 2) Créer sa première classe
             $characterClass = $character->characterClasses()->create([
-                'class_id' => $data['playable_class_id'],
-                'level' => 1,
+                'class_id' => $playableClassId,
+                'level' => 0,
             ]);
 
-            // 3) Enregistrer les niveaux 0 et 1
-            $characterClass->levels()->createMany([
-                [
-                    'level' => 0,
-                    'variant' => 'default',
-                ],
-                [
-                    'level' => 1,
-                    'variant' => 'default',
-                ],
+            // 3) Enregistrer le niveau 0
+            $characterClass->levels()->create([
+                'level' => 0,
+                'variant' => 'default',
             ]);
+
+            // 4) Enregistrer les skills de race
+            $skillsToGrant = SkillPlayableRace::query()
+                ->with('skill')
+                ->where('playable_race_id', $data['race_id'])
+                ->get();
+
+            foreach ($skillsToGrant as $skillToGrant) {
+                $character->skills()->attach($skillToGrant->skill_id, [
+                    'purchased_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
 
             return $character;
         });
+
+        // 4) Passer le niveau 1
+        $levelUpCharacterClass->execute($character, $playableClassId);
 
         return redirect()
             ->route('characters.show', $character)
@@ -110,21 +124,7 @@ class CharacterController extends Controller
             ->orderBy('starts_at')
             ->first();
 
-        $totalBonuses = $character->total_bonuses;
-
-        $spentPoints = [
-            'points_c' => $character->skills->sum('cost_c'),
-            'points_l' => $character->skills->sum('cost_l'),
-            'points_v' => $character->skills->sum('cost_v'),
-            'points_r' => $character->skills->sum('cost_r'),
-        ];
-
-        $availablePoints = [
-            'points_c' => max(0, $totalBonuses['points_c'] - $spentPoints['points_c']),
-            'points_l' => max(0, $totalBonuses['points_l'] - $spentPoints['points_l']),
-            'points_v' => max(0, $totalBonuses['points_v'] - $spentPoints['points_v']),
-            'points_r' => max(0, $totalBonuses['points_r'] - $spentPoints['points_r']),
-        ];
+        $availablePoints = $character->available_points;
 
         $availableSkills = Skill::query()
             ->withAvailablePointCost()
