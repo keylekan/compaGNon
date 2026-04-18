@@ -13,7 +13,8 @@ class CharacterSkillController extends Controller
 {
     public function store(Request $request, Character $character): RedirectResponse
     {
-        Gate::authorize('update', $character);
+        $user = auth()->user();
+        abort_unless($user->admin || $character->user_id === $user->id, 403);
 
         $data = $request->validate([
             'skill_id' => ['required', 'exists:skills,id'],
@@ -68,7 +69,8 @@ class CharacterSkillController extends Controller
 
     public function destroy(Character $character, Skill $skill): RedirectResponse
     {
-        abort_unless($character->user_id === auth()->id(), 403);
+        $user = auth()->user();
+        abort_unless($user->admin || $character->user_id === $user->id, 403);
 
         $lastPurchase = DB::table('character_skill')
             ->where('character_id', $character->id)
