@@ -7,6 +7,7 @@ use App\Models\CharacterClass;
 use App\Models\SkillClassLevel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
+use RuntimeException;
 use Throwable;
 
 class LevelUpCharacterClass
@@ -18,7 +19,18 @@ class LevelUpCharacterClass
     public function execute(Character $character, int $playableClassId, string $variant = 'default'): CharacterClass
     {
         return DB::transaction(function () use ($character, $playableClassId, $variant) {
+            $currentGlobalLevel = $character->characterClasses()->sum('level');
+
+            if ($currentGlobalLevel >= 10) {
+                throw new RuntimeException('Le personnage a déjà atteint le niveau maximum.');
+            }
+
             // 1. Récupérer la classe du personnage
+            $character->characterClasses()
+                ->firstOrCreate(
+                    ['class_id' => $playableClassId],
+                    ['level' => 0],
+                );
             $class = $character->characterClasses()
                 ->where('class_id', $playableClassId)
                 ->lockForUpdate()

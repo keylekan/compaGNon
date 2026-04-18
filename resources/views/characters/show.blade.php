@@ -137,10 +137,48 @@
                                         <p class="text-sm text-bronze-600">
                                             Niveau {{ $class->pivot->level }}
                                         </p>
+                                        @if(Auth::user()->admin)
+                                            <form method="POST" action="{{ route('characters.level-up', $character) }}">
+                                                @csrf
+
+                                                <input type="hidden" name="playable_class_id" value="{{ $class->id }}">
+                                                <input type="hidden" name="variant" value="default">
+
+                                                <x-button type="submit" size="sm" variant="primary">
+                                                    +1 niveau
+                                                </x-button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             </li>
                         @endforeach
+                        <li class="rounded-xl border border-sand-200 bg-white px-4 py-2">
+                            <div class="flex items-center gap-3">
+                                <div class="min-w-0 space-y-1">
+                                    <p class="truncate font-semibold text-bronze-900">
+                                        Multiclassage
+                                    </p>
+                                    @if(Auth::user()->admin)
+                                        <form class="space-y-1" method="POST" action="{{ route('characters.level-up', $character) }}">
+                                            @csrf
+
+                                            <input type="hidden" name="variant" value="default">
+
+                                            <x-select name="playable_class_id" size="sm">
+                                                @foreach ($newClasses as $class)
+                                                    <option value="{{ $class->id }}">{{ $class->title }}</option>
+                                                @endforeach
+                                            </x-select>
+
+                                            <x-button type="submit" size="sm" variant="primary">
+                                                Valider
+                                            </x-button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                        </li>
                     </ul>
 
                     <dl class="flex gap-3 text-sm">
@@ -254,6 +292,14 @@
             </div>
 
             @if(Auth::user()->admin)
+            <x-info-panel class="mt-6 font-semibold" message="La plateforme ne permet pas encore :">
+                <ul class="list-inside list-disc">
+                    <li>Les choix de sorts</li>
+                    <li>Les choix post compétence (exemple choix de langues avec Lire & Écrire)</li>
+                </ul>
+                Pour ces cas de figure, veuillez indiquer vos choix dans le champ "BG / Intentions de jeu ci-dessus.
+            </x-info-panel>
+
             <x-character.skills-panel
                 :character="$character"
                 :availablePoints="$availablePoints"

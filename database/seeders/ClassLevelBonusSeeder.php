@@ -137,7 +137,7 @@ class ClassLevelBonusSeeder extends Seeder
             'voleur' => [
                 'default' => [
                     0 => ['hit_points' => 4, 'points_c' => 0, 'points_l' => 0, 'points_v' => 0, 'points_r' => 0],
-                    1 => ['hit_points' => 2, 'points_c' => 0, 'points_l' => 0, 'points_v' => 4, 'points_r' => 10],
+                    1 => ['hit_points' => 2, 'points_c' => 0, 'points_l' => 0, 'points_v' => 4, 'points_r' => 4],
                     2 => ['hit_points' => 2, 'points_c' => 0, 'points_l' => 0, 'points_v' => 2, 'points_r' => 4],
                     3 => ['hit_points' => 1, 'points_c' => 0, 'points_l' => 0, 'points_v' => 2, 'points_r' => 2],
                     4 => ['hit_points' => 2, 'points_c' => 0, 'points_l' => 0, 'points_v' => 2, 'points_r' => 4],
@@ -153,7 +153,7 @@ class ClassLevelBonusSeeder extends Seeder
             'marchand' => [
                 'default' => [
                     0 => ['hit_points' => 4, 'points_c' => 0, 'points_l' => 0, 'points_v' => 0, 'points_r' => 0],
-                    1 => ['hit_points' => 2, 'points_c' => 1, 'points_l' => 2, 'points_v' => 0, 'points_r' => 4],
+                    1 => ['hit_points' => 2, 'points_c' => 1, 'points_l' => 2, 'points_v' => 0, 'points_r' => 1],
                     2 => ['hit_points' => 2, 'points_c' => 1, 'points_l' => 2, 'points_v' => 0, 'points_r' => 2],
                     3 => ['hit_points' => 1, 'points_c' => 0, 'points_l' => 2, 'points_v' => 0, 'points_r' => 2],
                     4 => ['hit_points' => 2, 'points_c' => 1, 'points_l' => 2, 'points_v' => 0, 'points_r' => 2],
@@ -169,7 +169,7 @@ class ClassLevelBonusSeeder extends Seeder
             'barde' => [
                 'default' => [
                     0 => ['hit_points' => 4, 'points_c' => 0, 'points_l' => 0, 'points_v' => 0, 'points_r' => 0],
-                    1 => ['hit_points' => 2, 'points_c' => 0, 'points_l' => 0, 'points_v' => 2, 'points_r' => 4],
+                    1 => ['hit_points' => 2, 'points_c' => 0, 'points_l' => 0, 'points_v' => 2, 'points_r' => 1],
                 ],
 
                 'combattant' => [

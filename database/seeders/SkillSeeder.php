@@ -500,6 +500,12 @@ Si deux voleurs sont présents, le voleur possédant la compétence la plus faib
 La compétence Crochetage ne s’applique pas et n’aura donc pas d’effet sur une porte ou une serrure fermée magiquement.
 MD,
                 'cost_r' => 1,
+                'class_levels' => [
+                    ['class' => 'voleur', 'level' => $defaultClassLevel],
+                    ['class' => 'voleur', 'level' => $defaultClassLevel],
+                    ['class' => 'marchand', 'level' => $defaultClassLevel],
+                    ['class' => 'barde', 'level' => $defaultClassLevel],
+                ],
             ],
             [
                 'title' => 'Désarmement',
@@ -520,6 +526,12 @@ Désamorçage des pièges mécaniques et magiques.
 Cette compétence est liée à la compétence détection des pièges.
 MD,
                 'cost_r' => 1,
+                'class_levels' => [
+                    ['class' => 'voleur', 'level' => $defaultClassLevel],
+                    ['class' => 'voleur', 'level' => $defaultClassLevel],
+                    ['class' => 'marchand', 'level' => $defaultClassLevel],
+                    ['class' => 'barde', 'level' => $defaultClassLevel],
+                ],
             ],
             [
                 'title' => 'Détection des pièges',
@@ -531,6 +543,12 @@ Dans certaines professions c'est une question de survie et cette compétence dev
 Un piège de complexité supérieure à la compétence du voleur ne pourra pas être détecté ou désamorcé, voire les deux à la fois.
 MD,
                 'cost_r' => 1,
+                'class_levels' => [
+                    ['class' => 'voleur', 'level' => $defaultClassLevel],
+                    ['class' => 'voleur', 'level' => $defaultClassLevel],
+                    ['class' => 'marchand', 'level' => $defaultClassLevel],
+                    ['class' => 'barde', 'level' => $defaultClassLevel],
+                ],
             ],
             [
                 'title' => 'Esquive',

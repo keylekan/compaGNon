@@ -19,6 +19,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('characters', CharacterController::class);
     Route::post('/characters/{character}/team', [CharacterTeamController::class, 'store'])
         ->name('characters.team.store');
+    Route::post('/characters/{character}/level-up', [CharacterController::class, 'levelUp'])
+        ->name('characters.level-up');
 
     Route::post('/characters/{character}/team/join', [CharacterTeamController::class, 'join'])
         ->name('characters.team.join');

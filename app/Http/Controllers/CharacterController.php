@@ -14,6 +14,7 @@ use App\Models\SkillPlayableRace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Throwable;
 
 class CharacterController extends Controller
 {
@@ -101,6 +102,38 @@ class CharacterController extends Controller
             ->with('status', 'Personnage créé.');
     }
 
+    public function levelUp(
+        Request $request,
+        Character $character,
+        LevelUpCharacterClass $levelUpCharacterClass,
+    ) {
+        $user = auth()->user();
+        abort_unless($user->admin || $character->user_id === $user->id, 403);
+
+        $validated = $request->validate([
+            'playable_class_id' => ['required', 'integer', 'exists:playable_classes,id'],
+            'variant' => ['nullable', 'string', 'max:50'],
+        ]);
+
+        try {
+            $levelUpCharacterClass->execute(
+                character: $character,
+                playableClassId: (int) $validated['playable_class_id'],
+                variant: $validated['variant'] ?? 'default',
+            );
+
+            return redirect()
+                ->route('characters.show', $character)
+                ->with('success', 'Le personnage est monté de niveau avec succès.');
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('characters.show', $character)
+                ->with('error', 'La montée de niveau a échoué.');
+        }
+    }
+
     /**
      * Display the specified resource.
      */
@@ -132,7 +165,14 @@ class CharacterController extends Controller
             ->orderBy('title')
             ->get();
 
-        return view('characters.show', compact('character', 'nextPendingEvent', 'availablePoints', 'availableSkills'));
+        $ownedClassIds = $character->characterClasses()
+            ->pluck('class_id');
+
+        $newClasses = PlayableClass::query()
+            ->whereNotIn('id', $ownedClassIds)
+            ->get();
+
+        return view('characters.show', compact('character', 'nextPendingEvent', 'availablePoints', 'availableSkills', 'newClasses'));
     }
 
     /**
