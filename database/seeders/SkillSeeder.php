@@ -413,6 +413,9 @@ MD,
                 'cost_l' => 3,
                 'cost_c' => 6,
                 'cost_v' => 3,
+                'class_levels' => [
+                    ['class' => 'marchand', 'level' => $defaultClassLevel],
+                ],
             ],
             [
                 'title' => 'Concentration',
@@ -684,6 +687,11 @@ MD,
                 'cost_l' => 1,
                 'cost_c' => 2,
                 'cost_v' => 2,
+                'class_levels' => [
+                    ['class' => 'barde', 'level' => $defaultClassLevel],
+                    ['class' => 'mage', 'level' => $defaultClassLevel],
+                    ['class' => 'clerc', 'level' => $defaultClassLevel],
+                ],
             ],
             [
                 'title' => 'Maroquinerie',
