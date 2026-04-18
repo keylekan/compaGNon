@@ -297,7 +297,7 @@
                     <li>Les choix de sorts</li>
                     <li>Les choix post compétence (exemple choix de langues avec Lire & Écrire)</li>
                 </ul>
-                Pour ces cas de figure, veuillez indiquer vos choix dans le champ "BG / Intentions de jeu ci-dessus.
+                Pour ces cas de figure, veuillez indiquer vos choix dans le champ "BG / Intentions de jeu" ci-dessus.
             </x-info-panel>
 
             <x-character.skills-panel
