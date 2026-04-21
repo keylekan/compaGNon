@@ -291,7 +291,6 @@
                 </form>
             </div>
 
-            @if(Auth::user()->admin)
             <x-info-panel class="mt-6 font-semibold" message="La plateforme ne permet pas encore :">
                 <ul class="list-inside list-disc">
                     <li>Les choix de sorts</li>
@@ -305,7 +304,6 @@
                 :availablePoints="$availablePoints"
                 :availableSkills="$availableSkills"
             />
-            @endif
         </x-panel>
     </div>
 </x-app-layout>
