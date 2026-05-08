@@ -123,7 +123,7 @@
                 <div class="sm:col-span-3 md:col-span-11 flex items-center gap-2">
                     <button
                         type="button"
-                        class="rounded-lg focus:outline-none focus:ring-4 focus:ring-teal-200"
+                        class="shrink-0 rounded-lg focus:outline-none focus:ring-4 focus:ring-teal-200"
                         @click="selectedAvatar = {{ Js::from($avatarPath) }}; selectedAvatarName = {{ Js::from($userName) }}"
                         aria-label="Afficher l'avatar de {{ $userName }} en grand"
                     >
