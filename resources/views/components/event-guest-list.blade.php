@@ -133,12 +133,12 @@
                             class="h-12 w-12 rounded-lg object-cover border border-sand-300 transition hover:opacity-85"
                         >
                     </button>
-                    <div class="flex flex-col gap-1">
-                        <div class="flex flex-wrap text-sm font-semibold {{empty($reg->user?->name) ? 'opacity-70' : ''}}">
-                            {{ $userName }}
-                            @if($userAge) <span class="text-xs font-medium text-sand-800 text-nowrap">{{$userAge}} ans</span> @endif
+                    <div class="min-w-0 flex flex-col gap-1">
+                        <div class="flex flex-wrap gap-0.5 items-center text-sm font-semibold {{empty($reg->user?->name) ? 'opacity-70' : ''}}">
+                            <div>{{ $userName }}</div>
+                            @if($userAge) <div class="text-xs font-medium text-sand-800 text-nowrap">{{$userAge}} ans</div> @endif
                         </div>
-                        <div class="text-xs opacity-70">
+                        <div class="truncate text-xs opacity-70" title="{{ $email }}">
                             {{ $email }}
                         </div>
                     </div>
@@ -256,4 +256,3 @@
         </div>
     </x-modal>
 </x-panel>
-
