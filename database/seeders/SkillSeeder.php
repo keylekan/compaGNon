@@ -667,6 +667,11 @@ MD,
                 'cost_l' => 3,
                 'cost_c' => 6,
                 'cost_v' => 6,
+                'class_levels' => [
+                    ['class' => 'barde', 'level' => $defaultClassLevel],
+                    ['class' => 'mage', 'level' => $defaultClassLevel],
+                    ['class' => 'druide', 'level' => $defaultClassLevel],
+                ],
             ],
             [
                 'title' => 'Langages secrets',

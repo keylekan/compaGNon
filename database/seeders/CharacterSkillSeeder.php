@@ -39,7 +39,7 @@ class CharacterSkillSeeder extends Seeder
 
                     if ($character->race_id) {
                         $raceSkillIds = DB::table('skill_playable_race')
-                            ->where('playable_race_id', $character->playable_race_id)
+                            ->where('playable_race_id', $character->race_id)
                             ->pluck('skill_id');
 
                         $grantedSkills = $grantedSkills->merge($raceSkillIds);
