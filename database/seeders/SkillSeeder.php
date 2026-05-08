@@ -668,6 +668,7 @@ MD,
                 'cost_c' => 6,
                 'cost_v' => 6,
                 'class_levels' => [
+                    ['class' => 'clerc', 'level' => $defaultClassLevel],
                     ['class' => 'barde', 'level' => $defaultClassLevel],
                     ['class' => 'mage', 'level' => $defaultClassLevel],
                     ['class' => 'druide', 'level' => $defaultClassLevel],
