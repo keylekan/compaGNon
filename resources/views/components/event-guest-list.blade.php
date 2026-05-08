@@ -29,7 +29,12 @@
     ];
 @endphp
 
-<x-panel class="space-y-4" :main="false">
+<x-panel
+    class="space-y-4"
+    :main="false"
+    x-data="{ selectedAvatar: null, selectedAvatarName: '' }"
+    @keydown.escape.window="selectedAvatar = null"
+>
     <x-button-link
         :href="route('events.participants.export', $event)"
         variant="panel"
@@ -98,6 +103,7 @@
             @php
                 $userName = empty($reg->user?->name) ? 'Invité' : $reg->user?->name;
                 $userAge = $reg->user?->age;
+                $avatarPath = $reg->user?->avatar_path;
                 $email = $reg->email;
 
                 $char = $reg->character;
@@ -112,15 +118,29 @@
                         ->join(', ');
             @endphp
 
-            <div class="grid px-2 py-1 gap-2 sm:grid-cols-7 md:grid-cols-42 md:items-center">
+            <div class="grid px-1 py-1 gap-1 sm:grid-cols-7 md:grid-cols-42 md:items-center">
                 {{-- Joueur --}}
-                <div class="sm:col-span-3 md:col-span-10">
-                    <div class="text-sm font-semibold {{empty($reg->user?->name) ? 'opacity-70' : ''}}">
-                        {{ $userName }}
-                        @if($userAge) <span class="text-xs font-medium text-sand-800">{{$userAge}} ans</span> @endif
-                    </div>
-                    <div class="text-xs opacity-70">
-                        {{ $email }}
+                <div class="sm:col-span-3 md:col-span-11 flex items-center gap-2">
+                    <button
+                        type="button"
+                        class="rounded-lg focus:outline-none focus:ring-4 focus:ring-teal-200"
+                        @click="selectedAvatar = {{ Js::from($avatarPath) }}; selectedAvatarName = {{ Js::from($userName) }}"
+                        aria-label="Afficher l'avatar de {{ $userName }} en grand"
+                    >
+                        <img
+                            src="{{ $avatarPath }}"
+                            alt="Avatar de {{ $userName }}"
+                            class="h-12 w-12 rounded-lg object-cover border border-sand-300 transition hover:opacity-85"
+                        >
+                    </button>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex flex-wrap text-sm font-semibold {{empty($reg->user?->name) ? 'opacity-70' : ''}}">
+                            {{ $userName }}
+                            @if($userAge) <span class="text-xs font-medium text-sand-800 text-nowrap">{{$userAge}} ans</span> @endif
+                        </div>
+                        <div class="text-xs opacity-70">
+                            {{ $email }}
+                        </div>
                     </div>
                 </div>
 
@@ -136,8 +156,10 @@
                                 <span class="font-semibold">{{ $charName }}</span><!--
                              -->@if($char->team)<!--
                                  --><span class="text-xs font-medium text-sand-800"> ({{ $char->team->name }})</span><!--
-                             -->@endif<!--
-                             --><span class="text-xs font-medium text-sand-800">, {{ $charGod }}, {{ $charGender }}, {{ $alignCode }}</span>
+                             -->@endif
+                            </div>
+                            <div class="text-sm text-sand-600 font-semibold">
+                                {{ $charGod }}, {{ $charGender }}, {{ $char->alignment_label }}
                             </div>
                             <div class="text-sm text-bronze-500">
                                 {{ $race }}, {{ $classes }}
@@ -151,7 +173,7 @@
                 </div>
 
                 {{-- Statut invitation --}}
-                <div class="sm:col-span-3 md:col-span-7">
+                <div class="sm:col-span-3 md:col-span-6">
                     <div class="text-xs opacity-70 mb-1">Invitation</div>
                     <div class="flex items-center gap-1">
                         <x-badge-invite :status="$reg->invite_status" />
@@ -222,4 +244,16 @@
     <div class="pt-2">
         {{ $registrations->links() }}
     </div>
+
+    <x-modal show="selectedAvatar" title="Avatar">
+        <div class="flex justify-center">
+            <img
+                x-show="selectedAvatar"
+                :src="selectedAvatar"
+                :alt="`Avatar de ${selectedAvatarName}`"
+                class="max-h-[75vh] max-w-full rounded-xl object-contain border border-sand-300 bg-white"
+            >
+        </div>
+    </x-modal>
 </x-panel>
+
