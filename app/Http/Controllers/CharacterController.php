@@ -45,6 +45,7 @@ class CharacterController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
      * @throws \Throwable
      */
     public function store(StoreCharacterRequest $request, LevelUpCharacterClass $levelUpCharacterClass)
@@ -57,12 +58,12 @@ class CharacterController extends Controller
 
             // 1) Créer le personnage
             $character = Character::create([
-                'user_id'   => $user->id,
-                'name'      => $data['name'],
-                'gender'    => $data['gender'],
+                'user_id' => $user->id,
+                'name' => $data['name'],
+                'gender' => $data['gender'],
                 'alignment' => $data['alignment'],
-                'race_id'   => $data['race_id'],
-                'god_id'    => $data['god_id'],
+                'race_id' => $data['race_id'],
+                'god_id' => $data['god_id'],
             ]);
 
             // 2) Créer sa première classe
@@ -143,7 +144,7 @@ class CharacterController extends Controller
 
         abort_unless($user->admin || $character->user_id === $user->id, 403);
 
-        $character->load(['race', 'classes']);
+        $character->load(['user', 'race', 'classes']);
         $character->load(['team.characters' => function ($q) {
             $q->orderBy('name');
         }]);
@@ -188,13 +189,36 @@ class CharacterController extends Controller
      */
     public function update(Request $request, Character $character)
     {
-        $request->validate([
+        Gate::authorize('update', $character);
+
+        $user = $request->user();
+
+        $validated = $request->validate([
             'player_notes' => ['nullable', 'string', 'max:500'],
+            'inventory' => ['nullable', 'string', 'max:10000'],
         ]);
 
-        $character->update([
-            'player_notes' => filled($request->player_notes) ? trim($request->player_notes) : null,
-        ]);
+        $updates = [];
+
+        if ($request->has('player_notes')) {
+            abort_unless($character->user_id === $user->id, 403);
+
+            $updates['player_notes'] = filled($validated['player_notes'] ?? null)
+                ? trim($validated['player_notes'])
+                : null;
+        }
+
+        if ($request->has('inventory')) {
+            abort_unless($user->admin, 403);
+
+            $updates['inventory'] = filled($validated['inventory'] ?? null)
+                ? trim($validated['inventory'])
+                : null;
+        }
+
+        if ($updates !== []) {
+            $character->update($updates);
+        }
 
         return back()->with('success', 'Mise à jour effectuée.');
     }
@@ -210,6 +234,6 @@ class CharacterController extends Controller
 
         return redirect()
             ->route('characters.index')
-            ->with('success', "Le personnage a bien été supprimé.");
+            ->with('success', 'Le personnage a bien été supprimé.');
     }
 }

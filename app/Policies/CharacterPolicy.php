@@ -22,6 +22,10 @@ class CharacterPolicy
 
     public function update(User $user, Character $character): bool
     {
+        if ($user->admin) {
+            return true;
+        }
+
         if ($character->user_id === $user->id) {
             return true;
         }
@@ -32,7 +36,7 @@ class CharacterPolicy
     public function delete(User $user, Character $character): bool
     {
         if ($character->user_id === $user->id) {
-            if (!$character->registrations()->exists()) {
+            if (! $character->registrations()->exists()) {
                 return true;
             }
         }

@@ -291,6 +291,57 @@
                 </form>
             </div>
 
+            {{-- Inventaire --}}
+            @php
+                $canEditInventory = auth()->user()->admin;
+            @endphp
+
+            <div class="mt-6 rounded-xl border border-sand-200 bg-white p-5">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-semibold text-bronze-900">
+                            Inventaire
+                        </p>
+                        @if($canEditInventory)
+                            <p class="mt-1 text-sm text-sand-700">
+                                Liste des objets actuellement possédés par ce personnage.
+                            </p>
+                        @endif
+                    </div>
+                </div>
+
+                @if($canEditInventory)
+                    <form method="POST" action="{{ route('characters.update', $character) }}" class="mt-4 space-y-3">
+                        @csrf
+                        @method('PUT')
+
+                        <textarea
+                            name="inventory"
+                            rows="8"
+                            maxlength="10000"
+                            class="w-full rounded-xl border border-sand-200 bg-sand-50 px-4 py-3 text-sm text-sand-900 placeholder:text-sand-600 focus:border-bronze-400 focus:ring-2 focus:ring-bronze-200"
+                            placeholder="Ex : épée longue, armure de cuir, 3 potions de soin, lettre scellée..."
+                        >{{ old('inventory', $character->inventory) }}</textarea>
+
+                        @error('inventory')
+                        <p class="mt-2 text-sm text-red-700">{{ $message }}</p>
+                        @enderror
+
+                        <div class="flex items-center justify-end">
+                            <x-button type="submit" size="sm" variant="primary">
+                                Enregistrer l’inventaire
+                            </x-button>
+                        </div>
+                    </form>
+                @elseif($character->inventory)
+                    <p class="mt-4 whitespace-pre-line text-sm text-sand-900">{{ $character->inventory }}</p>
+                @else
+                    <p class="mt-4 text-sm text-sand-700 italic">
+                        Aucun objet renseigné.
+                    </p>
+                @endif
+            </div>
+
             <x-info-panel class="mt-6 font-semibold" message="La plateforme ne permet pas encore :">
                 <ul class="list-inside list-disc">
                     <li>Les choix de sorts</li>

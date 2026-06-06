@@ -21,6 +21,7 @@ class Character extends Model
         'race_id',
         'god_id',
         'player_notes',
+        'inventory',
     ];
 
     public function getAlignmentLabelAttribute(): string
@@ -44,7 +45,7 @@ class Character extends Model
         $l = $this->alignment[0] ?? null;
         $m = $this->alignment[1] ?? null;
 
-        if (!isset($law[$l], $mor[$m])) {
+        if (! isset($law[$l], $mor[$m])) {
             return $this->alignment; // fallback brut
         }
 
@@ -150,20 +151,20 @@ class Character extends Model
 
         $classBonuses = $this->characterClasses->flatMap(function ($characterClass) {
             $selectedLevels = $characterClass->levels
-                ->keyBy(fn ($level) => $level->level . ':' . $level->variant);
+                ->keyBy(fn ($level) => $level->level.':'.$level->variant);
 
             return $characterClass->class->levelBonuses
-                ->filter(fn ($bonus) => $selectedLevels->has($bonus->level . ':' . $bonus->variant));
+                ->filter(fn ($bonus) => $selectedLevels->has($bonus->level.':'.$bonus->variant));
         });
 
         $race = $this->race;
 
         return [
             'hit_points' => $classBonuses->sum('hit_points') + ($race?->hp_modifier ?? 0),
-            'points_c'   => $classBonuses->sum('points_c') + ($race?->points_c ?? 0),
-            'points_l'   => $classBonuses->sum('points_l') + ($race?->points_l ?? 0),
-            'points_v'   => $classBonuses->sum('points_v') + ($race?->points_v ?? 0),
-            'points_r'   => $classBonuses->sum('points_r') + ($race?->points_r ?? 0),
+            'points_c' => $classBonuses->sum('points_c') + ($race?->points_c ?? 0),
+            'points_l' => $classBonuses->sum('points_l') + ($race?->points_l ?? 0),
+            'points_v' => $classBonuses->sum('points_v') + ($race?->points_v ?? 0),
+            'points_r' => $classBonuses->sum('points_r') + ($race?->points_r ?? 0),
         ];
     }
 
